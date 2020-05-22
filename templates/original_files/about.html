@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block head_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<p> title: {{ title }}</p>
+<p> ID: {{user}}</p>
+<p> name: {{user.name}}</p>
+<p> age: {{user.age}}</p>
+<p> Token: {{user.age}}</p>
+
+
+<a href="http://127.0.0.1:8000/members/password_change">Change Password  </a>
+
+{% endblock %}

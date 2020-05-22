@@ -1,0 +1,9 @@
+django==2.2
+Pillow==6.1.0
+djangorestframework==3.10.3
+django-rest-auth==0.9.5
+python-dotenv
+django-cors-headers==2.5.2
+django-allauth
+django-crispy-forms==1.7.2
+validate_email

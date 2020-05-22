@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{ title }}</h1>
+
+<br>Please click on the following blogs for details:
+
+{% for blog_item in blog_list %}
+  <li class="nav-link">
+  <a href="blog/{{blog_item.slug}}">{{ blog_item.title }}  </a>
+  </li>
+{% endfor %}
+
+<li class="nav-link">
+  <a href="blog/">VIEW ALL</a>
+</li>
+
+{% if user.is_authenticated %}
+
+{% else %}
+<br>Please signup in order to create your own blogs: <br>
+      <li class="nav-link">
+        <a href="{% url 'login' %}">login</a> | <a href="{% url 'signup' %}">signup</a>
+      </li>
+{% endif %}
+
+{% endblock %}

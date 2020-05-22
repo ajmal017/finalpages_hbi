@@ -1,0 +1,16 @@
+ <div class='col-12 col-md-10 mb-3 mx-auto'>
+ <div class='card {% if not blog_post.publish_date %} border border-warning text-dark {% endif %}'>
+    <div class='card-body'>
+
+        <h5 class='card-title'>{{ blog_post.title }}</h5>
+
+        {% if not detail %}
+            {% if not blog_post.publish_date %} Draft {% endif %}
+            <a href="{{ blog_post.get_absolute_url }}">Details</a>
+            <a href="{{ blog_post.get_absolute_url }}/edit/">Edit</a>
+            <a href="{{ blog_post.get_absolute_url }}/delete/">Delete</a>
+        {% endif %}
+    </div>
+
+ </div>
+</div>

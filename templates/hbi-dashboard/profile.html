@@ -1,0 +1,90 @@
+{% extends 'hbi-dashboard/base.html' %}
+{% load static %}
+{% block title %} | Profile {% endblock %}
+
+
+{% block content %}
+
+<body>
+
+{% include 'hbi-dashboard/_topbar.html' %}
+
+    <div class="dashboard-main-wrapper">
+
+        {% include 'hbi-dashboard/_leftsidebar.html' %}
+
+        <!-- ============================================================== -->
+        <!-- wrapper  -->
+        <!-- ============================================================== -->
+        <div class="dashboard-wrapper">
+            <div class="dashboard-finance">
+                <div class="container-fluid dashboard-content">
+                    <!-- ============================================================== -->
+                    <!-- pageheader  -->
+                    <!-- ============================================================== -->
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="page-header">
+                                <h2 class="pageheader-title">Blank Title</h2>
+                                <p class="pageheader-text">Proin placerat ante duiullam scelerisque a velit ac porta, fusce sit amet vestibulum mi. Morbi lobortis pulvinar quam.</p>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+   <!-- START -->
+
+
+
+                  <!-- ============================================================== -->
+                  <!-- [   7    ][   8  ]                                             -->
+                  <!-- ============================================================== -->
+                    <div class="row">
+                        <!-- ============================================================== -->
+                        <!-- [   7    ]                                                     -->
+                        <!-- ============================================================== -->
+
+                       <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="card">
+                                <h5 class="card-header">Profile</h5>
+                            <div class="card-body">
+                                    <div class="user-avatar text-center d-block">
+                                        <img src="{{ user.photo.url }}" alt="User Avatar" class="rounded-circle user-avatar-xxl">
+                                        <!-- <img src="{% static 'hbi-dashboard_static/assets/images/avatar-1.jpg' %}" alt="User Avatar" class="rounded-circle user-avatar-xxl"> -->
+                                    </div>
+                                    <div class="text-center">
+                                        <h2 class="mb-0 text-black nav-user-name">{{ user.first_name }} {{ user.last_name }}</h2>
+                                        <p>Project Manager @Influnce</p>
+                                    </div>
+                                </div>
+                                <!--
+                                <div class="card-body">
+                                    <div id="capital"></div>
+                                    <div class="text-center m-t-10">
+                                        <span class="legend-item mr-3">
+                                                <span class="fa-xs text-secondary mr-1 legend-tile"><i class="fa fa-fw fa-square-full"></i></span>
+                                        <span class="legend-text">Working Capital</span>
+                                        </span>
+                                        <p></p>
+                                    </div>
+                                </div>
+                            -->
+                            </div>
+                        </div>
+
+                    </div>
+
+   <!-- END -->
+
+            </div>
+            {% include 'hbi-dashboard/_footer.html' %}
+        </div>
+        <!-- ============================================================== -->
+        <!-- end wrapper  -->
+        <!-- ============================================================== -->
+      </div>
+    </div>
+</body>
+
+{% endblock %}

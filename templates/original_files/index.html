@@ -1,0 +1,98 @@
+{% extends "partials/_base4.html" %}
+{% load static %}
+
+{% block content %}
+
+  <head>
+    <title>NewTitle</title>
+  </head>
+  <body>
+    <!-- Header  -->
+    <section id="hbi-header">
+      
+
+      <div class="container">
+
+          <div class="hbi row">
+              <div class="hbi col-md-6">  <!-- This column shows the XL logo and description -->
+                <img src="{% static 'img/logo3.png' %}" class="img-fluid"/>
+                  <h2 style="color:black"><STRONG>FOCUS...MEASURE...ACHIEVE!</STRONG></h2>
+                  <p class="lead" style="color:black" >Say goodbye to spreadsheets. Say hello to HBI-OKR. HBI-OKR software and supporting app helps you create and monitor objectives and key results with ease.</p>
+                  <p class="hidden-sm-down d-none d-md-block" style="color:black">Say goodbye to spreadsheets. Say hello to HBI-OKR. HBI-OKR software and supporting app helps you create and monitor objectives and key results with ease.</p>
+                  
+              </div>
+              
+                   <div class="hbi col-md-6 header-right">
+              <!-- <div class="col-md-6 header-right d-none d-md-block">  This column shows right translucent block  -->
+                
+                    <h1>SignUp Now</h1><br>
+                  
+                  <form>
+                    <fieldset class="form-group">
+                        <label class="sr-only">Name</label>
+                        <input type="text" class="form-control" placeholder="Your name...">
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label class="sr-only">Email</label>
+                        <input type="email" class="form-control" placeholder="Your email...">
+                    </fieldset>
+                    <button type="submit" class="btn btn-outline-info btn-block">Sign Up</button>
+                  </form>
+
+              </div>
+          </div>
+          
+          <div class="row">  <!-- this is the 'V' symbol -->
+                <div class="col-md-12 text-center">
+                    <a href="#social"><i class="fa fa-chevron-down fa-3x"></i></a>
+                </div>
+          </div>
+      
+      </div>
+      
+  </section>
+  
+<!-- END HEADER -->
+  <!-- FOOTER -->
+    
+    <section id="footer">
+      <div class="container wow fadeInUp" data-wow-delay="0.4s" data-wow-duration="1.5s">
+          
+          <div class="row">
+              <div class="col-md-8 col-sm-6">
+                  <h3>About HengBao International (HBI) Pte Ltd</h3>
+                  <p>Hengbao Co., Ltd. manufactures and markets magnetic cards, Integrated-chip cards, SIM cards for telecommunications and EMV cards for banks and other card related products.</p>
+                  <p>The company was founded on September 24, 1996 and is headquartered in Beijing, China.</p>
+                  <ul class="list-inline">
+                      <li class="list-inline-item"><a href="#"><i class="fa fa-facebook"></i></a></li>
+                      <li class="list-inline-item"><a href="#"><i class="fa fa-twitter"></i></a></li>
+                      <li class="list-inline-item"><a href="#"><i class="fa fa-instagram"></i></a></li>
+                      <li class="list-inline-item"><a href="#"><i class="fa fa-pinterest-p"></i></a></li>
+                      <li class="list-inline-item"><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                      <li class="list-inline-item"><a href="#"><i class="fa fa-rss"></i></a></li>
+                  </ul>
+              </div>
+              
+              <div class="col-md-4 col-sm-6">
+                  <h3>Contact Details:</h3>
+                  <ul class="list-unstyled">
+                      <li><p><strong><i class="fa fa-map-marker"></i> Address:</strong> 300 Beach Road, The Concourse #34-06, Singapore</p></li>
+                      <li><p><strong><i class="fa fa-envelope"></i> Email:</strong> <a href="#">admin@hengbao.com</a></p></li>
+                      <li><p><strong><i class="fa fa-phone"></i> Phone:</strong> +65 234 567 8910</p></li>
+                  </ul>
+              </div>
+          </div>
+          
+          <div class="row">
+              <div class="col-md-12">
+                  <p>&copy; 2020 Copyright & Design by David Tang</p>
+              </div>
+          </div>
+          
+      </div>
+    </section>
+    
+  <!-- END FOOTER -->
+  </body>
+
+{% endblock %}

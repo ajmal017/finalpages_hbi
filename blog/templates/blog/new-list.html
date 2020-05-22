@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<p> {{ title }} </p>
+
+Click <a href="{{ blog_post.get_absolute_url }}/blog-new/">HERE</a> to create new blog <br><br>
+
+    <div class='row'>
+    {% for object in object_list %}
+        {% include 'blog/new-list-inline.html' with blog_post=object truncate=True detail=False %}
+    {% endfor %}
+</div>
+
+
+{% endblock %}
