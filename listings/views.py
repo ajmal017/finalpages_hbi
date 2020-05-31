@@ -1,10 +1,14 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from .choices import price_choices, bedroom_choices, state_choices
 from django.contrib.auth.decorators import login_required
 from .models import Listing
+from members.models import MemberProfile
+from django.utils import timezone
+from .forms import ListingForm
 
-def index(request):
+
+def listall(request):
   #listings = Listing.objects.order_by('-list_date').filter(is_published=True)
   listings = Listing.objects.all()
 
@@ -18,25 +22,8 @@ def index(request):
 
   return render(request, 'listings/listings.html', context)
 
-@login_required
-def newindex(request):
-  if request.user.is_authenticated:
-    #listings = Listing.objects.order_by('-list_date').filter(is_published=True)
-    listings = Listing.objects.all()
-    paginator = Paginator(listings, 4)
-    page = request.GET.get('page')
-    paged_listings = paginator.get_page(page)
-
-    context = {
-      'listings': paged_listings,
-      "title": "list.html",
-      "blog_list": listings
-    }
-    return render(request, 'hbi-dashboard/list.html', context)
-
-
-
-def listing(request, listing_id):
+# david007
+def listselected(request, listing_id):                 #display individual items
   listing = get_object_or_404(Listing, pk=listing_id)
 
   context = {
@@ -85,5 +72,178 @@ def search(request):
     'listings': queryset_list,
     'values': request.GET
   }
-
   return render(request, 'listings/search.html', context)
+
+#######################################################################################################
+
+@login_required
+def upload_brochure(request):
+    my_qs = MemberProfile.objects.filter(username=request.user)
+    initial_data = {
+        'contributor': MemberProfile.objects.get(username=request.user),
+        'type': 'BROCHURE',
+        'country': my_qs[0].brochure_country,
+        'list_date': timezone.now
+    }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload Brochure Document",
+                    "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+@login_required
+def upload_certificate(request):
+    my_qs = MemberProfile.objects.filter(username=request.user)
+    initial_data = {
+        'contributor': MemberProfile.objects.get(username=request.user),
+        'type': 'CERTIFICATE',
+        'country': my_qs[0].certificate_country,
+        'list_date': timezone.now
+    }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload Certificate Document",
+                    "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+@login_required
+def upload_eproof(request):
+    my_qs = MemberProfile.objects.filter(username=request.user)
+    initial_data = {
+        'contributor': MemberProfile.objects.get(username=request.user),
+        'type': 'E-PROOF',
+        'country': my_qs[0].eproof_country,
+        'list_date': timezone.now
+    }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload Electronic-Proof Document",
+                    "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+@login_required
+def upload_manual(request):
+    my_qs = MemberProfile.objects.filter(username=request.user)
+    initial_data = {
+        'contributor': MemberProfile.objects.get(username=request.user),
+        'type': 'MANUAL',
+        'country': my_qs[0].manual_country,
+        'list_date': timezone.now
+    }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload Manual Document",
+                    "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+@login_required
+def upload_proposal(request):
+    my_qs = MemberProfile.objects.filter(username=request.user)
+    initial_data = {
+        'contributor': MemberProfile.objects.get(username=request.user),
+        'type': 'PROPOSAL',
+        'country': my_qs[0].proposal_country,
+        'list_date': timezone.now
+    }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload Proposal Document",
+                    "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+@login_required
+def upload_powerpoint(request):
+    my_qs = MemberProfile.objects.filter(username=request.user)
+    initial_data = {
+        'contributor': MemberProfile.objects.get(username=request.user),
+        'type': 'POWERPOINT',
+        'country': my_qs[0].powerpoint_country,
+        'list_date': timezone.now
+    }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload PowerPoint Document",
+                    "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+
+@login_required
+def upload_quotation(request):
+    my_qs = MemberProfile.objects.filter(username=request.user)
+    initial_data = {
+        'contributor': MemberProfile.objects.get(username=request.user),
+        'type': 'QUOTATION',
+        'country': my_qs[0].quotation_country,
+        'list_date': timezone.now
+    }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload Quotation Document",
+                    "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+@login_required
+def alldocuments(request):
+    if request.user.is_authenticated:
+        qs = Listing.objects.all()
+        context = {"title": "All Documents", 'blog_list': qs }
+        return render(request, "hbi-dashboard/alldocuments.html", context)
+
+@login_required
+def mydocuments(request):
+    if request.user.is_authenticated:
+        my_qs = MemberProfile.objects.filter(username=request.user)
+        qs = Listing.objects.filter(contributor=my_qs[0])
+        context = {"title": "My Documents", 'listing': qs}
+        return render(request, "hbi-dashboard/mydocuments_old.html", context)
+
+#david007
+@login_required
+def selecteddocument(request, listing_id):                 #display individual items
+  listing = get_object_or_404(Listing, pk=listing_id)
+  context = {
+    'listing': listing
+  }
+  return render(request, 'hbi-dashboard/selecteddocument.html', context)

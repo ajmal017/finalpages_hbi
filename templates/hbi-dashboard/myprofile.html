@@ -1,0 +1,143 @@
+{% extends 'hbi-dashboard/base.html' %}
+{% load static %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+{% include 'hbi-dashboard/_topbar.html' %}
+
+    <div class="dashboard-main-wrapper">
+
+        {% include 'hbi-dashboard/_leftsidebar.html' %}
+
+        <!-- ============================================================== -->
+        <!-- wrapper  -->
+        <!-- ============================================================== -->
+        <div class="dashboard-wrapper">
+            <div class="dashboard-finance">
+                <div class="container-fluid dashboard-content">
+                    <!-- ============================================================== -->
+                    <!-- pageheader  -->
+                    <!-- ============================================================== -->
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="page-header">
+                                <h2 class="pageheader-title">{{ title }}</h2>
+                            </div>
+                        </div>
+                    </div>
+
+ <!-- START -->
+
+<div class="row">
+            <!-- ============================================================== -->
+            <!-- CURRENT PROFILE                                                 -->
+            <!-- ============================================================== -->
+
+            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12">
+                <div class="card">
+                    <!-- <h5 class="card-header">COLUMN 4</h5>  -->
+                <div class="card-body">
+                        <div class="user-avatar text-center d-block">
+                            <img src="{{ user.photo.url }}" alt="User Avatar" class="rounded-circle user-avatar-xxl">
+                            <!-- <img src="{% static 'hbi-dashboard_static/assets/images/avatar-1.jpg' %}" alt="User Avatar" class="rounded-circle user-avatar-xxl"> -->
+                        </div>
+                        <div class="text-center">
+                            <h2 class="mb-0 text-black nav-user-name">{{ user.first_name }} {{ user.last_name }}</h2>
+                            <p> {{ user.position }}</p>
+                            <p>{{ user.department }} Department</p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- CHANGES                                                       -->
+            <!-- ============================================================== -->
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h4 class="mb-0">Edit Profile</h4>
+                    </div>
+
+                     <div class="card-body">
+                        <form class="needs-validation" novalidate="">
+                            <div class="mb-3">
+                                <label for="address">Position</label>
+                                <input type="text" class="form-control" name="position">
+                            </div>
+                            <div class="mb-3">
+                                <label for="address">Department</label>
+                                <select class="custom-select d-block w-100" id="department" required="">
+                                        <option value="">{{ user.department }}</option>
+                                        {% for i in department %}
+                                        <option>{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="address">Change Profile Picture</label>
+                                    <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                            </div>
+                            <hr class="mb-4">
+                            <button class="btn btn-primary btn-lg btn-block" type="submit">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h4 class="mb-0">Edit Profile</h4>
+                    </div>
+
+                     <div class="col-md-3">
+		<div class="card card-body">
+			<a class="btn btn-warning" href="{% url 'home' %}"> &#8592; Back to Profile</a>
+			<hr>
+			<h3 style="text-align: center">Account Settings</h3>
+			<hr>
+			<img class="profile-pic" src="{{request.user.customer.profile_pic.url}}" >
+
+		</div>
+	</div>
+	<div class="col-md-9">
+		<div class="card card-body">
+
+			<form method="POST" action="" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{form.as_p}}
+
+			<input class="btn btn-primary" type="submit" name="Update Information">
+			</form>
+		</div>
+	</div>
+
+                </div>
+
+
+
+
+
+
+
+
+             </div>
+
+</div>
+
+ <!-- END -->
+
+            </div>
+            {% include 'hbi-dashboard/_footer.html' %}       <!-- footer -->
+        </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end wrapper  -->
+        <!-- ============================================================== -->
+    </div>
+
+{% endblock %}

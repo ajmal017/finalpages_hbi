@@ -9,9 +9,9 @@ from rest_framework import generics, permissions
 @login_required
 def blog_post_list_myblogs(request):
     if request.user.is_authenticated:
-        my_qs = BlogPost.objects.filter(user=request.user)
+        my_qs = BlogPost.objects.filter(name=request.name)
         for item in my_qs:
-            print (item.slug)
+            print ('1. slug=',item.slug)
     template_name = 'blog/new-list.html'
     context = {"title": "myblog-ABC", 'object_list': my_qs}
     return render(request, template_name, context)

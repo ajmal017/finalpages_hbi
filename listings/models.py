@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-
 from django.conf import settings
 User = settings.AUTH_USER_MODEL
 
@@ -15,8 +14,9 @@ DOCUMENT_CHOICES = (
     ("MISCELLANEOUS", "miscellaneous"),
 )
 
+
 COUNTRY_CHOICES = (
-    ("ALL", "All"),
+    ("ALL COUNTRIES", "All Countries"),
     ("BRUNEI", "Brunei"),
     ("CAMBODIA", "Cambodia"),
     ("HONG KONG", "Hong Kong"),
@@ -34,12 +34,16 @@ COUNTRY_CHOICES = (
 
 class Listing(models.Model):
     title = models.CharField(max_length=100)
+    #contributor = models.ForeignKey(User, on_delete=models.CASCADE)
     contributor = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField()
     type = models.CharField(max_length=20, choices=DOCUMENT_CHOICES, default="miscellaneous")
-    country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="any")
+    country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="All")
     docfile = models.FileField(upload_to='documents/docfiles/%Y/%m/%d/')
     cover = models.ImageField(upload_to='documents/covers/%Y/%m/%d/', blank=True)
+    preview_1 = models.ImageField(upload_to='documents/previews/%Y/%m/%d/', blank=True)
+    preview_2 = models.ImageField(upload_to='documents/previews/%Y/%m/%d/', blank=True)
+    preview_3 = models.ImageField(upload_to='documents/previews/%Y/%m/%d/', blank=True)
     list_date = models.DateTimeField(default=timezone.now, blank=False)
 
     def __str__(self):

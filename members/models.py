@@ -11,6 +11,23 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils import six
 
+COUNTRY_CHOICES = (
+    ("ALL COUNTRIES", "All Countries"),
+    ("BRUNEI", "Brunei"),
+    ("CAMBODIA", "Cambodia"),
+    ("HONG KONG", "Hong Kong"),
+    ("INDONESIA", "Indonesia"),
+    ("LAOS", "Laos"),
+    ("MALAYSIA", "Malaysia"),
+    ("MONGOLIA", "Mongolia"),
+    ("MYANMAR", "Myanmar"),
+    ("PAKISTAN", "Pakistan"),
+    ("PHILIPPINES", "Philippines"),
+    ("SINGAPORE", "Singapore"),
+    ("THAILAND", "Thailand"),
+    ("VIETNAM", "Vietnam"),
+)
+
 class MemberProfileManager(BaseUserManager):
     """Manager for member profiles"""
 
@@ -44,12 +61,24 @@ class MemberProfileManager(BaseUserManager):
 
         return user
 
+DEPARTMENT_CHOICES = (
+    ("Sales", "SALES"),
+    ("Business Development", "BUSINESS DEVELOPMENT"),
+    ("Marketing", "MARKETING"),
+    ("Technical Support", "TECHNICAL SUPPORT"),
+    ("Research & Development", "RESEARCH & DEVELOPMENT"),
+    ("Finance", "FINANCE"),
+    ("Legal", "LEGAL"),
+)
 
 class MemberProfile(AbstractBaseUser, PermissionsMixin):
     username = models.EmailField(max_length=100, unique=True)
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
-    photo = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    position = models.CharField(max_length=100, blank=True)
+    department = models.CharField(max_length=20, choices=DEPARTMENT_CHOICES, default="Sales")
+    #photo = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d/', default="photos/pic1.png")
     description = models.TextField(blank=True)
     website = models.URLField(max_length=200)
     join_date = models.DateTimeField(default=timezone.now, blank=True)
@@ -57,15 +86,23 @@ class MemberProfile(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_developer = models.BooleanField(default=False)
     is_seller = models.BooleanField(default=False)
-
     objects = MemberProfileManager()
+
+    brochure_country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="ALL COUNTRIES")
+    certificate_country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="ALL COUNTRIES")
+    eproof_country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="ALL COUNTRIES")
+    manual_country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="ALL COUNTRIES")
+    proposal_country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="ALL COUNTRIES")
+    powerpoint_country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="ALL COUNTRIES")
+    quotation_country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="ALL COUNTRIES")
+    items_per_page = models.IntegerField(default=3)
+
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def get_full_name(self):
         fullname = self.first_name+'_'+ self.last_name
-        """Retrieve full name of user"""
         return fullname
 
     def get_username(self):
@@ -75,15 +112,12 @@ class MemberProfile(AbstractBaseUser, PermissionsMixin):
         return self.username
 
     def get_short_name(self):
-        """Retrieve short name of user"""
         return self.first_name
 
     def __str__(self):
-        """Return string representation of our user"""
         return self.username
 
 class ProfileFeedItem(models.Model):
-    """Profile status update"""
     user_profile = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
@@ -92,7 +126,6 @@ class ProfileFeedItem(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        """Return the model as a string"""
         return self.status_text
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

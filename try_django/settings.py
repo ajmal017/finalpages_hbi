@@ -43,11 +43,11 @@ INSTALLED_APPS = [ # components
     'blog',                      # blog is a database of blogs
     'searches',
     'members',
+    'customers',
     'documents',                 # proposals, quotations
     'api.apps.ApiConfig',       # REST api application - django for api (WS Vincent)
     'crispy_forms',
     'listings',
-    'pages',
 ]
 
 MIDDLEWARE = [
@@ -141,8 +141,9 @@ STATICFILES_DIRS = [
 # directory which static file (at STATICFILES_DIRS) will be copied when using - python manage.py collectstatic
 STATIC_ROOT= os.path.join(BASE_DIR, 'collectstatic')
 
+
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  #relative path to saving all media file, can set absolute path ie. MEDIA_ROOT = '/TMP/MEDIA'
 
 AUTH_USER_MODEL = 'members.MemberProfile'
 
@@ -177,11 +178,3 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
 
-"""
-#the following can be used for testing - using cryptocoinwiz@gmail.com to reply emails
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'cryptocoinwiz@gmail.com'
-EMAIL_HOST_PASSWORD = 'Eadgbe135!'
-EMAIL_PORT = 587
-"""

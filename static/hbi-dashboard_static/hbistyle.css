@@ -147,3 +147,10 @@ height: 30vh;
 border:2px solid grey;
 object-fit: cover;
 }
+
+.profile-pic-customer{
+		max-width: 200px;
+		max-height:200px;
+		margin: 0 auto;
+		border-radius: 50%;
+	}

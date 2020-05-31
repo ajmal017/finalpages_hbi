@@ -12,7 +12,8 @@ class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'is_staff', 'is_active', )
     list_filter = ('username', 'is_staff', 'is_active',)
     fieldsets = (
-        ('Member Details', {'fields': ('first_name', 'last_name', 'username', 'password' , 'photo')}),
+        ('Personal Information', {'fields': ('first_name', 'last_name', 'username', 'photo')}),
+        ('Corporate Settings', {'fields': ('department', 'position', 'items_per_page')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_developer', 'is_seller')}),
     )
     add_fieldsets = (

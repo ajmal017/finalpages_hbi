@@ -1,0 +1,188 @@
+{% extends 'hbi-dashboard/base.html' %}
+{% load static %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+
+{% include 'hbi-dashboard/_topbar.html' %}
+
+    <div class="dashboard-main-wrapper">
+
+        {% include 'hbi-dashboard/_leftsidebar.html' %}
+
+        <!-- ============================================================== -->
+        <!-- wrapper  -->
+        <!-- ============================================================== -->
+        <div class="dashboard-wrapper">
+
+            <div class="container-fluid dashboard-content ">
+                    <!-- ============================================================== -->
+                    <!-- pageheader  -->
+                    <!-- ============================================================== -->
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="page-header">
+                                <h2 class="pageheader-title">{{ title }} </h2>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ============================================================== -->
+                    <!-- end pageheader  -->
+                    <!-- ============================================================== -->
+                    <div class="row">
+                        <div class="col-xl-9 col-lg-8 col-md-8 col-sm-12 col-12">
+                            <div class="row">
+
+
+                            {% if blog_list %}
+                                 {% for listing in blog_list %}
+
+                                        <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 col-12">
+                                            <div class="product-thumbnail">
+                                                <div class="product-img-head">
+                                                    <div class="product-img">
+                                                             <img src="{{ listing.cover.url }}" alt="" class="card-img-top123"></div>
+                                                   <div class="ribbon ribbon-top-right"><span>{{ listing.type }}</span></div>
+                                                </div>
+                                                <div class="product-content">
+                                                    <div class="product-content-head">
+                                                        <h3 class="product-title">{{ listing.title|truncatechars:21 }}</h3>
+                                                    </div>
+                                                    <div class="product-btn">
+                                                        <a href="{% url 'selecteddocument' listing.id %}" class="btn btn-primary">See Details </a>
+
+                                                        <!-- <a href="{{ listing.pdf.url }}" class="btn btn-success" download>Download</a>  -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                 {% endfor %}
+                            {% else %}
+                                    <div class="col-md-12">
+                                        <p>No Listings Available</p>
+                                    </div>
+                            {% endif %}
+
+
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                            <li class="page-item active"><a class="page-link " href="#">2</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12 col-12">
+                            <div class="product-sidebar">
+                                <div class="product-sidebar-widget">
+                                    <h3 class="mb-0">Document Search</h3>
+                                </div>
+                                <div class="product-sidebar-widget">
+                                    <h5 class="product-sidebar-widget-title">Type Of Document</h5>
+
+                                    <div class="product-sidebar-widget">
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="cat-1">
+                                                <label class="custom-control-label" for="cat-1">Brochure</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="cat-2">
+                                                <label class="custom-control-label" for="cat-2">Certificate</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="cat-3">
+                                                <label class="custom-control-label" for="cat-3">E-Proof</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="cat-4">
+                                                <label class="custom-control-label" for="cat-4">Manual</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="cat-5">
+                                                <label class="custom-control-label" for="cat-5">PowerPoint</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="cat-6">
+                                                <label class="custom-control-label" for="cat-4">Proposal</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="cat-7">
+                                                <label class="custom-control-label" for="cat-5">Quotation</label>
+                                            </div>
+                                </div>
+
+                                </div>
+
+                                <div class="product-sidebar-widget">
+                                    <!-- <a href="#" class="btn btn-outline-light">Search</a>  -->
+                                    <a href="{{ blog_item.pdf.url }}" class="btn btn-warning" download>Search</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            Paginator from BTRE
+            {% for listing in listings %}
+            <!-- paginator from Btre -->
+             <div class="row">
+                            <div class="col-md-12">
+                              {% if listings.has_other_pages %}
+                                <ul class="pagination">
+                                  {% if listings.has_previous %}
+                                    <li class="page-item">
+                                      <a href="?page={{listings.previous_page_number}}" class="page-link">&laquo;</a>
+                                    </li>
+                                  {% else %}
+                                    <li class="page-item disabled">
+                                      <a class="page-link">&laquo;</a>
+                                    </li>
+                                  {% endif %}
+                                  {% for i in listings.paginator.page_range %}
+                                    {% if listings.number == i %}
+                                      <li class="page-item active">
+                                        <a class="page-link">{{i}}</a>
+                                      </li>
+                                    {% else %}
+                                      <li class="page-item">
+                                        <a href="?page={{i}}" class="page-link">{{i}}</a>
+                                      </li>
+                                    {% endif %}
+                                  {% endfor %}
+                                  {% if listings.has_next %}
+                                    <li class="page-item">
+                                      <a href="?page={{listings.next_page_number}}" class="page-link">&raquo;</a>
+                                    </li>
+                                  {% else %}
+                                    <li class="page-item disabled">
+                                      <a class="page-link">&raquo;</a>
+                                    </li>
+                                  {% endif %}
+                                </ul>
+                              {% endif %}
+                            </div>
+             </div>
+            {% endfor %}
+
+
+
+
+
+
+
+
+        {% include 'hbi-dashboard/_footer.html' %}       <!-- footer -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- end wrapper  -->
+        <!-- ============================================================== -->
+    </div>
+
+{% endblock %}

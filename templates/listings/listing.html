@@ -5,6 +5,9 @@
 {% block title %} | {{ listing.title }} {% endblock %}
 
 {% block content %}
+
+Here at listings/listing.html --> need to update page to show individual items
+
 <section id="showcase-inner" class="py-5 text-white">
     <div class="container">
       <div class="row text-center">
@@ -23,7 +26,7 @@
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'home' %}">Home</a>
           </li>
           <li class="breadcrumb-item">
             <a href="{% url 'listings' %}">Listings</a>
@@ -35,7 +38,7 @@
   </section>
 
   <!-- Alerts -->
-  {% include 'partials/_alerts.html' %}
+
 
   <!-- Listing -->
   <section id="listing" class="py-4">
@@ -171,7 +174,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form action="{% url 'contact' %}" method="POST">
+          <form action="{% url 'home' %}" method="POST">
             {% csrf_token %}
             {% if user.is_authenticated %}
               <input type="hidden" name="user_id" value="{{ user.id }}">
