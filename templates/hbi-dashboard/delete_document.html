@@ -1,6 +1,6 @@
 {% extends 'hbi-dashboard/base.html' %}
 {% load static %}
-{% block title %} {{title }} {% endblock %}
+{% block title %} {{ title }} {% endblock %}
 
 {% block content %}
 
@@ -22,43 +22,37 @@
                     <div class="row">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                             <div class="page-header">
-                                <h2 class="pageheader-title">{{ title }} </h2>
+                                <h2 class="pageheader-title"> Confirm Delete Document {{ item.title }}?</h2>
                             </div>
                         </div>
                     </div>
 
  <!-- START -->
 
+
+
 <div class="row">
 <!-- ============================================================== -->
-<!-- EDIT CUSTOMER PROFILE                                          -->
+<!-- [  6  ]  -->
 <!-- ============================================================== -->
+
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                            <div class="card">
-                                <!-- <h5 class="card-header">COLUMN 4</h5>  -->
+                            <!-- <div class="card"> -->
+                                <!-- <h5 class="card-header">COLUMN 6</h5>  -->
 
+                                    <!-- <form action="{% url 'delete_customer' item.id  %}" method="POST">  -->
+                                    <form action= "{% url 'delete_document' item.id  %}" method="POST">
+                                        {% csrf_token %}
+                                        <a class="btn btn-warning" href="{% url 'home' %}">Cancel</a>
 
-                            <div class="row">
-                                <div class="col-md-3">
-                                     <div class="card card-body">
-                                        <img class="profile-pic-customer" src="{{customer.profile_pic.url}}" >
-                                     </div>
-                                </div>
-                                <div class="col-md-9">
-                                    <div class="card card-body">
+                                        <input class="btn btn-danger" type="submit" name="Confirm" value="Confirm">
+                                    </form>
 
-                                        <form method="POST" enctype="multipart/form-data">
-                                            {% csrf_token %}
-                                            {{form.as_p}}
-
-                                        <input class="btn btn-primary" type="submit" name="Update Information" value="Save Changes">
-                                        </form>
-                                    </div>
-                                </div>
                             </div>
-                          </div>
-                        </div>
-      </div>
+                        <!-- </div>  -->
+
+ </div>
+
 
  <!-- END -->
 

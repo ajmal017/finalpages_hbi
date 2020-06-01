@@ -23,7 +23,9 @@ from members.views import (
 
 from customers.views import (
     mycustomers,
+    create_customer,
     edit_customer,
+    delete_customer,
 )
 
 from listings.views import (
@@ -35,6 +37,8 @@ from listings.views import (
     upload_proposal,
     upload_quotation,
     mydocuments,
+    delete_document,
+    edit_document,
     alldocuments,
     selecteddocument,
     listall,
@@ -70,6 +74,9 @@ urlpatterns = [
     path('upload-quotation/', upload_quotation, name ='upload_quotation'),
 
     path('mydocuments/', mydocuments, name ='mydocuments'),
+    path('mydocuments/delete/<int:listing_id>', delete_document, name='delete_document'),
+    path('mydocuments/edit/<int:listing_id>', edit_document, name='edit_document'),
+
     path('alldocuments/', alldocuments, name='alldocuments'),
     path('alldocuments/<int:listing_id>', selecteddocument, name='selecteddocument'),
 
@@ -88,7 +95,11 @@ urlpatterns = [
 
     #function is located is at customers.views
     path('mycustomers/', mycustomers, name ='mycustomers'),
-    path('mycustomers/<int:customer_id>', edit_customer, name='customer'),
+    #path('mycustomers/<int:customer_id>', edit_customer, name='customer'),
+    path('mycustomers/create/', create_customer, name='create_customer'),
+    path('mycustomers/edit/<int:customer_id>', edit_customer, name='edit_customer'),
+    path('mycustomers/delete/<int:customer_id>', delete_customer, name='delete_customer'),
+
 
     path('listings/', listall, name='listings'),                         #similar to alldocuments, to be remove later
     path('listings/<int:listing_id>', listselected, name='listing'),     #similar to selecteddocument, to be remove later

@@ -1,12 +1,10 @@
 from django.db import models
 from django.utils import timezone
-from django.conf import settings
-User = settings.AUTH_USER_MODEL
+from members.models import MemberProfile
 
 DOCUMENT_CHOICES = (
     ("PROPOSAL", "proposal"),
-    ("QUOTATION", "quotation"),
-    ("E-PROOF", "e-proof"),
+    ("EPROOF", "eproof"),
     ("POWERPOINT", "powerpoint"),
     ("BROCHURE", "brochure"),
     ("CERTIFICATE", "certificate"),
@@ -34,8 +32,7 @@ COUNTRY_CHOICES = (
 
 class Listing(models.Model):
     title = models.CharField(max_length=100)
-    #contributor = models.ForeignKey(User, on_delete=models.CASCADE)
-    contributor = models.ForeignKey(User, on_delete=models.CASCADE)
+    contributor = models.ForeignKey(MemberProfile, null=True, blank=True, on_delete=models.CASCADE)
     description = models.TextField()
     type = models.CharField(max_length=20, choices=DOCUMENT_CHOICES, default="miscellaneous")
     country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="All")
@@ -45,6 +42,7 @@ class Listing(models.Model):
     preview_2 = models.ImageField(upload_to='documents/previews/%Y/%m/%d/', blank=True)
     preview_3 = models.ImageField(upload_to='documents/previews/%Y/%m/%d/', blank=True)
     list_date = models.DateTimeField(default=timezone.now, blank=False)
+    is_published = models.BooleanField(default=True)
 
     def __str__(self):
       return self.title
