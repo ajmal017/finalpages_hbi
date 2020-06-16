@@ -13,8 +13,8 @@
                             <li class="nav-divider">
                                 Menu
                             </li>
-                            <li class="nav-item ">
-                                <a class="nav-link" href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'gallery' %}"><i class="far fa-id-card"></i>Cards Gallery</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'alldocuments' %}"><i class="fas fa-copy"></i>All Documents</a>
@@ -33,13 +33,13 @@
                                     <ul class="nav flex-column">
 
                                         <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'upload_eproof' %}">E-Proofs</a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a class="nav-link" href="{% url 'upload_brochure' %}">Brochures</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="{% url 'upload_certificate' %}">Certificates</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="{% url 'upload_eproof' %}">E-Proofs</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="{% url 'upload_manual' %}">Manuals</a>
@@ -55,13 +55,6 @@
                                         </li>
                                     </ul>
                                 </div>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'okr' %}"><i class="fas fa-bullseye"></i>Obj. Key Results (OKR)</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'forecast' %}"><i class="far fa-id-card"></i>Cards Forecast</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'mycustomers' %}"><i class="fas fa-users"></i>My Customers</a>

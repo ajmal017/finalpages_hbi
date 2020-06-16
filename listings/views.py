@@ -2,11 +2,340 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from .choices import price_choices, bedroom_choices, state_choices
 from django.contrib.auth.decorators import login_required
-from .models import Listing
-from members.models import MemberProfile
-from django.utils import timezone
-from .forms import ListingForm, EditListingForm
+from .models import Listing, Eproof
+from members.models import Member
+from .forms import ListingForm, EproofForm
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import ListingSerializer
+
+@api_view(['GET'])
+def mydocumentsOverview(request):
+	api_urls = {
+		'List':'/task-list/',
+		'Detail View':'/task-detail/<str:pk>/',
+		'Create':'/task-create/',
+		'Update':'/task-update/<str:pk>/',
+		'Delete':'/task-delete/<str:pk>/',
+		}
+	return Response(api_urls)
+
+@api_view(['GET'])
+def mydocumentstaskList(request):
+	tasks = Listing.objects.all().order_by('-id')
+	serializer = ListingSerializer(tasks, many=True)
+	return Response(serializer.data)
+
+@api_view(['GET'])
+def mydocumentstaskDetail(request, pk):
+	tasks = Listing.objects.get(id=pk)
+	serializer = ListingSerializer(tasks, many=False)
+	return Response(serializer.data)
+
+
+@api_view(['POST'])
+def mydocumentstaskCreate(request):
+	serializer = ListingSerializer(data=request.data)
+	if serializer.is_valid():
+		serializer.save()
+	return Response(serializer.data)
+
+@api_view(['POST'])
+def mydocumentstaskUpdate(request, pk):
+	task = Listing.objects.get(id=pk)
+	serializer = ListingSerializer(instance=task, data=request.data)
+	if serializer.is_valid():
+		serializer.save()
+	return Response(serializer.data)
+
+@api_view(['DELETE'])
+def mydocumentstaskDelete(request, pk):
+	task = Listing.objects.get(id=pk)
+	task.delete()
+	return Response('Item succsesfully delete!')
+
+
+
+
+
+
+
+
+##########################################################################
+
+@login_required
+def mydocumentslist(request):
+	if request.user.is_authenticated:
+		my_qs = Member.objects.filter(username=request.user)
+		qs = Listing.objects.filter(contributor=my_qs[0])
+		context = {"title": "HBI List.html", 'my_qs': my_qs}
+		return render(request, "hbi-dashboard/list.html", context)
+
+
+
+@login_required
+def change_ispublished(request, items):
+    # for item_id
+    #selected_document = get_object_or_404(Listing, pk=listing_id)
+    pass
+
+@login_required
+def alldocuments(request):
+    if request.user.is_authenticated:
+        qs = Listing.objects.all()
+        context = {"title": "All Documents", 'blog_list': qs }
+        return render(request, "hbi-dashboard/alldocuments.html", context)
+
+@login_required
+def testdocuments(request):
+    if request.user.is_authenticated:
+        qs = Listing.objects.all()
+        context = {"title": "Blank001", 'blog_list': qs }
+        return render(request, "hbi-dashboard/testdocument.html", context)
+
+
+
+@login_required
+def mydocuments(request):
+    if request.user.is_authenticated:
+        my_qs = Member.objects.filter(username=request.user)
+        qs = Listing.objects.filter(contributor=my_qs[0])
+        context = {"title": "My Documents-16-6-20", 'listing': qs}
+        return render(request, "hbi-dashboard/mydocuments.html", context)
+
+@login_required
+def selecteddocument(request, listing_id):                 #display individual items
+  listing = get_object_or_404(Listing, pk=listing_id)
+  context = {
+    'listing': listing
+  }
+  return render(request, 'hbi-dashboard/selecteddocument.html', context)
+
+@login_required
+def delete_document(request, listing_id):
+    selected_document = get_object_or_404(Listing, pk=listing_id)
+    if request.method == "POST":
+        print('Here at delete document 123')
+        selected_document.delete()
+        return render(request, "hbi-dashboard/dashboard.html")
+
+    context = {'item': selected_document,
+               'title': 'Delete Document',
+              }
+    return render(request, 'hbi-dashboard/delete_document.html', context)
+
+def edit_document(request, listing_id):
+    selected_document = get_object_or_404(Listing, pk=listing_id)
+    form = ListingForm(instance=selected_document)
+
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES, instance=selected_document)
+        if form.is_valid():
+            print('1. form title=', form.cleaned_data['title'])
+            print('2. form description=', form.cleaned_data['description'])
+            print('3. form country=', form.cleaned_data['country'])
+            form.save()
+            return render(request, "hbi-dashboard/dashboard.html")
+        else:
+            return render(request, "hbi-dashboard/dashboard.html")
+    context = {'form':form,
+               'title': 'Edit Document',
+              }
+    return render(request, 'hbi-dashboard/edit_document.html', context)
+
+
+#######################################################################################################
+
+@login_required
+def upload_brochure(request):
+    my_qs = Member.objects.filter(username=request.user)
+    # print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
+    initial_data = {
+        'country': my_qs[0].brochure_country,
+    }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
+            # print('1. object title=', selected_item.title)
+            my_qs = Member.objects.filter(username=request.user)
+            selected_item.contributor = my_qs[0]  # assign a Member object into selected_customer.salesrep
+            selected_item.type = 'BROCHURE'
+            selected_item.save()
+
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload Brochure Document",
+                   "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+
+@login_required
+def upload_certificate(request):
+    my_qs = Member.objects.filter(username=request.user)
+    # print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
+    initial_data = {
+        'country': my_qs[0].certificate_country,
+    }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
+            # print('1. object title=', selected_item.title)
+            my_qs = Member.objects.filter(username=request.user)
+            selected_item.contributor = my_qs[0]  # assign a Member object into selected_customer.salesrep
+            selected_item.type = 'CERTIFICATE'
+            selected_item.save()
+
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload Certificate Document",
+                   "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+
+@login_required
+def upload_eproof(request):
+    my_qs = Member.objects.filter(username=request.user)
+    # print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
+    initial_data = {
+        'country': my_qs[0].eproof_country,
+    }
+    if request.method == 'POST':
+        form = EproofForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            selected_item = get_object_or_404(Eproof, title=form.cleaned_data['title'])
+            print('1. object title=', selected_item.title)
+            my_qs = Member.objects.filter(username=request.user)
+            selected_item.contributor = my_qs[0]  # assign a Member object into selected_customer.salesrep
+            selected_item.save()
+            return redirect('dashboard')
+    else:
+        form = EproofForm(initial=initial_data)
+        context = {"title": "New Upload E-Proof",
+                   "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_eproof.html', context)
+    #return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+
+@login_required
+def upload_manual(request):
+    my_qs = Member.objects.filter(username=request.user)
+    # print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
+    initial_data = {
+        'country': my_qs[0].manual_country,
+    }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
+            # print('1. object title=', selected_item.title)
+            my_qs = Member.objects.filter(username=request.user)
+            selected_item.contributor = my_qs[0]  # assign a Member object into selected_customer.salesrep
+            selected_item.type = 'MANUAL'
+            selected_item.save()
+
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload Manual Document",
+                   "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+
+@login_required
+def upload_proposal(request):
+    my_qs = Member.objects.filter(username=request.user)
+    # print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
+    initial_data = {
+        'country': my_qs[0].proposal_country,
+    }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
+            # print('1. object title=', selected_item.title)
+            my_qs = Member.objects.filter(username=request.user)
+            selected_item.contributor = my_qs[0]  # assign a Member object into selected_customer.salesrep
+            selected_item.type = 'PROPOSAL'
+            selected_item.save()
+
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload Proposal Document",
+                   "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+
+@login_required
+def upload_powerpoint(request):
+    my_qs = Member.objects.filter(username=request.user)
+    #print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
+    initial_data = {
+        'country': my_qs[0].powerpoint_country,
+        }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
+            #print('1. object title=', selected_item.title)
+            my_qs = Member.objects.filter(username=request.user)
+            selected_item.contributor = my_qs[0]  # assign a Member object into selected_customer.salesrep
+            selected_item.type = 'POWERPOINT'
+            selected_item.save()
+
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload PowerPoint Document",
+                    "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+@login_required
+def upload_quotation(request):
+    my_qs = Member.objects.filter(username=request.user)
+    #print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
+    initial_data = {
+        'country': my_qs[0].quotation_country,
+        }
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
+            #print('1. object title=', selected_item.title)
+            my_qs = Member.objects.filter(username=request.user)
+            selected_item.contributor = my_qs[0]  # assign a Member object into selected_customer.salesrep
+            selected_item.type = 'QUOTATION'
+            selected_item.save()
+
+            return redirect('dashboard')
+    else:
+        form = ListingForm(initial=initial_data)
+        context = {"heading": "Upload Quotation Document",
+                    "form": form
+                   }
+    return render(request, 'hbi-dashboard/upload_documents.html', context)
+
+
+
+#######################################################################################################
 
 def listall(request):
   #listings = Listing.objects.order_by('-list_date').filter(is_published=True)
@@ -73,255 +402,3 @@ def search(request):
     'values': request.GET
   }
   return render(request, 'listings/search.html', context)
-
-@login_required
-def alldocuments(request):
-    if request.user.is_authenticated:
-        qs = Listing.objects.all()
-        context = {"title": "All Documents", 'blog_list': qs }
-        return render(request, "hbi-dashboard/alldocuments.html", context)
-
-@login_required
-def mydocuments(request):
-    if request.user.is_authenticated:
-        my_qs = MemberProfile.objects.filter(username=request.user)
-        qs = Listing.objects.filter(contributor=my_qs[0])
-        context = {"title": "My Documents", 'listing': qs}
-        return render(request, "hbi-dashboard/mydocuments.html", context)
-
-@login_required
-def selecteddocument(request, listing_id):                 #display individual items
-  listing = get_object_or_404(Listing, pk=listing_id)
-  context = {
-    'listing': listing
-  }
-  return render(request, 'hbi-dashboard/selecteddocument.html', context)
-
-@login_required
-def delete_document(request, listing_id):
-    selected_document = get_object_or_404(Listing, pk=listing_id)
-    if request.method == "POST":
-        print('Here at delete document')
-        selected_document.delete()
-        return render(request, "hbi-dashboard/dashboard.html")
-
-    context = {'item': selected_document,
-               'title': 'Delete Document',
-              }
-    return render(request, 'hbi-dashboard/delete_document.html', context)
-
-def edit_document(request, listing_id):
-    selected_customer = get_object_or_404(Listing, pk=listing_id)
-    form = EditListingForm(instance=selected_customer)
-
-    if request.method == 'POST':
-        form = EditListingForm(request.POST, request.FILES, instance=selected_customer)
-        if form.is_valid():
-            print('1. form name=', form.cleaned_data['name'])
-            #print('2. form salesrep=', form.cleaned_data['salesrep'])
-            print('3. form country=', form.cleaned_data['country'])
-            print('4. form agent=', form.cleaned_data['agent'])
-            form.save()
-            return render(request, "hbi-dashboard/dashboard.html")
-        else:
-            return render(request, "hbi-dashboard/dashboard.html")
-    context = {'form':form,
-               'title': 'Edit Customer Profile',
-               'customer': selected_customer
-              }
-    return render(request, 'hbi-dashboard/edit_customer.html', context)
-
-
-#######################################################################################################
-
-@login_required
-def upload_brochure(request):
-    my_qs = MemberProfile.objects.filter(username=request.user)
-    # print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
-    initial_data = {
-        'country': my_qs[0].brochure_country,
-    }
-    if request.method == 'POST':
-        form = ListingForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
-            # print('1. object title=', selected_item.title)
-            my_qs = MemberProfile.objects.filter(username=request.user)
-            selected_item.contributor = my_qs[0]  # assign a MemberProfile object into selected_customer.salesrep
-            selected_item.type = 'BROCHURE'
-            selected_item.save()
-
-            return redirect('dashboard')
-    else:
-        form = ListingForm(initial=initial_data)
-        context = {"heading": "Upload Brochure Document",
-                   "form": form
-                   }
-    return render(request, 'hbi-dashboard/upload_documents.html', context)
-
-
-@login_required
-def upload_certificate(request):
-    my_qs = MemberProfile.objects.filter(username=request.user)
-    # print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
-    initial_data = {
-        'country': my_qs[0].certificate_country,
-    }
-    if request.method == 'POST':
-        form = ListingForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
-            # print('1. object title=', selected_item.title)
-            my_qs = MemberProfile.objects.filter(username=request.user)
-            selected_item.contributor = my_qs[0]  # assign a MemberProfile object into selected_customer.salesrep
-            selected_item.type = 'CERTIFICATE'
-            selected_item.save()
-
-            return redirect('dashboard')
-    else:
-        form = ListingForm(initial=initial_data)
-        context = {"heading": "Upload Certificate Document",
-                   "form": form
-                   }
-    return render(request, 'hbi-dashboard/upload_documents.html', context)
-
-
-@login_required
-def upload_eproof(request):
-    my_qs = MemberProfile.objects.filter(username=request.user)
-    # print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
-    initial_data = {
-        'country': my_qs[0].eproof_country,
-    }
-    if request.method == 'POST':
-        form = ListingForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
-            # print('1. object title=', selected_item.title)
-            my_qs = MemberProfile.objects.filter(username=request.user)
-            selected_item.contributor = my_qs[0]  # assign a MemberProfile object into selected_customer.salesrep
-            selected_item.type = 'EPROOF'
-            selected_item.save()
-
-            return redirect('dashboard')
-    else:
-        form = ListingForm(initial=initial_data)
-        context = {"heading": "Upload E-Proof Document",
-                   "form": form
-                   }
-    return render(request, 'hbi-dashboard/upload_documents.html', context)
-
-
-@login_required
-def upload_manual(request):
-    my_qs = MemberProfile.objects.filter(username=request.user)
-    # print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
-    initial_data = {
-        'country': my_qs[0].manual_country,
-    }
-    if request.method == 'POST':
-        form = ListingForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
-            # print('1. object title=', selected_item.title)
-            my_qs = MemberProfile.objects.filter(username=request.user)
-            selected_item.contributor = my_qs[0]  # assign a MemberProfile object into selected_customer.salesrep
-            selected_item.type = 'MANUAL'
-            selected_item.save()
-
-            return redirect('dashboard')
-    else:
-        form = ListingForm(initial=initial_data)
-        context = {"heading": "Upload Manual Document",
-                   "form": form
-                   }
-    return render(request, 'hbi-dashboard/upload_documents.html', context)
-
-
-@login_required
-def upload_proposal(request):
-    my_qs = MemberProfile.objects.filter(username=request.user)
-    # print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
-    initial_data = {
-        'country': my_qs[0].proposal_country,
-    }
-    if request.method == 'POST':
-        form = ListingForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
-            # print('1. object title=', selected_item.title)
-            my_qs = MemberProfile.objects.filter(username=request.user)
-            selected_item.contributor = my_qs[0]  # assign a MemberProfile object into selected_customer.salesrep
-            selected_item.type = 'PROPOSAL'
-            selected_item.save()
-
-            return redirect('dashboard')
-    else:
-        form = ListingForm(initial=initial_data)
-        context = {"heading": "Upload Proposal Document",
-                   "form": form
-                   }
-    return render(request, 'hbi-dashboard/upload_documents.html', context)
-
-
-@login_required
-def upload_powerpoint(request):
-    my_qs = MemberProfile.objects.filter(username=request.user)
-    #print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
-    initial_data = {
-        'country': my_qs[0].powerpoint_country,
-        }
-    if request.method == 'POST':
-        form = ListingForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
-            #print('1. object title=', selected_item.title)
-            my_qs = MemberProfile.objects.filter(username=request.user)
-            selected_item.contributor = my_qs[0]  # assign a MemberProfile object into selected_customer.salesrep
-            selected_item.type = 'POWERPOINT'
-            selected_item.save()
-
-            return redirect('dashboard')
-    else:
-        form = ListingForm(initial=initial_data)
-        context = {"heading": "Upload PowerPoint Document",
-                    "form": form
-                   }
-    return render(request, 'hbi-dashboard/upload_documents.html', context)
-
-@login_required
-def upload_quotation(request):
-    my_qs = MemberProfile.objects.filter(username=request.user)
-    #print ('my_qs.powerpoint_country=',my_qs[0].powerpoint_country)
-    initial_data = {
-        'country': my_qs[0].quotation_country,
-        }
-    if request.method == 'POST':
-        form = ListingForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            selected_item = get_object_or_404(Listing, title=form.cleaned_data['title'])
-            #print('1. object title=', selected_item.title)
-            my_qs = MemberProfile.objects.filter(username=request.user)
-            selected_item.contributor = my_qs[0]  # assign a MemberProfile object into selected_customer.salesrep
-            selected_item.type = 'QUOTATION'
-            selected_item.save()
-
-            return redirect('dashboard')
-    else:
-        form = ListingForm(initial=initial_data)
-        context = {"heading": "Upload Quotation Document",
-                    "form": form
-                   }
-    return render(request, 'hbi-dashboard/upload_documents.html', context)
-
-
-
-#######################################################################################################
-

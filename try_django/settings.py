@@ -31,23 +31,25 @@ INSTALLED_APPS = [ # components
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    #'django.contrib.sites',       # Returns either the current Site object or a RequestSite object based on the request.
-    'corsheaders',                # Cross-Origin Resource Sharing (CORS) to prevent API security issues with different domains or ports
-    'rest_framework',             # rest framework fot creating GET, POST, PUT, DELETE
-    'rest_framework.authtoken',   # for token creation when new user is created (shown at admin page under AUTH TOKEN)
-    #'rest_auth',                  # allows for login at http://127.0.0.1:8000/api/v1/api-auth/login/
-    #'rest_auth.registration',     # allows for registration at http://127.0.0.1:8000/api/v1/api-auth/registration/
-    #'allauth',
-    #'allauth.account',
-    #'allauth.socialaccount',
-    'blog',                      # blog is a database of blogs
-    'searches',
+    'corsheaders',                 # Cross-Origin Resource Sharing (CORS) to prevent API security issues with different domains or ports
+    'rest_framework',              # rest framework fot creating GET, POST, PUT, DELETE
+    'rest_framework.authtoken',    # for token creation when new user is created (shown at admin page under AUTH TOKEN)
+
     'members',
     'customers',
-    'documents',                 # proposals, quotations
-    'api.apps.ApiConfig',       # REST api application - django for api (WS Vincent)
-    'crispy_forms',
+    'movies',
     'listings',
+
+    'api.apps.ApiConfig',
+    'frontend.apps.FrontendConfig',
+
+    #'rest_auth',                  # allows for login/logout at http://127.0.0.1:8000/api/v1/api-auth/login/
+    #'django.contrib.sites',       # Returns either the current Site object based on the request (for social authentication via FB, google)
+    #'allauth',                    # for social authentication via FB, google
+    #'allauth.account',            # for social authentication via FB, google
+    #'allauth.socialaccount',      # for social authentication via FB, google
+    #'rest_auth.registration',     # allows for registration at http://127.0.0.1:8000/api/v1/api-auth/registration/ (for social authentication via FB, google)
+
 ]
 
 MIDDLEWARE = [
@@ -61,16 +63,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ORIGIN_WHITELIST = (
-    'localhost:3000'
-)
-
 ROOT_URLCONF = 'try_django.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'frontend/build')
+                ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -135,7 +135,8 @@ STATIC_URL = '/static/'
 
 # directory which django looks start to look for static files when using - {% static 'dir/file_name.css' %}
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'frontend/build/static')
 ]
 
 # directory which static file (at STATICFILES_DIRS) will be copied when using - python manage.py collectstatic
@@ -145,7 +146,10 @@ STATIC_ROOT= os.path.join(BASE_DIR, 'collectstatic')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  #relative path to saving all media file, can set absolute path ie. MEDIA_ROOT = '/TMP/MEDIA'
 
-AUTH_USER_MODEL = 'members.MemberProfile'
+AUTH_USER_MODEL = 'members.Member'
+
+#need to check how to set this for React
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -157,17 +161,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-"""
-# Gmail SMTP system
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
-EMAIL_HOST = 'smtp.sendgrid.net'                              
-EMAIL_HOST_USER = 'smilingideas'                              
-EMAIL_HOST_PASSWORD = 'qwert12345'                            
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-#EMAIL_USE_SSL = False
-"""
-
 
 # Sendgrid SMTP system
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -178,3 +171,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
 
+CORS_ORIGIN_WHITELIST = [
+
+    "http://127.0.0.1:3000",
+
+]

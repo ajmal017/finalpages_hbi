@@ -1,8 +1,8 @@
 from django.db import models
-from members.models import MemberProfile
+from members.models import Member
 
 class Customer(models.Model):
-	salesrep = models.ForeignKey(MemberProfile, null=True, blank=True, on_delete=models.CASCADE)
+	salesrep = models.ForeignKey(Member, null=True, blank=True, on_delete=models.CASCADE)
 	name = models.CharField(max_length=100, null=True)
 	country = models.CharField(max_length=50, null=True)
 	agent = models.CharField(max_length=100, default="NIL")

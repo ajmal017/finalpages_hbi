@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Listing
+from .models import Listing, Eproof
 
 
 class ListingForm(ModelForm):
@@ -8,16 +8,20 @@ class ListingForm(ModelForm):
     #type = forms.ChoiceField(choices=DOCUMENT_CHOICES, widget=forms.Select(attrs={'disabled': 'disabled',}))
     #contributor = forms.CharField(widget=forms.HiddenInput())
 
-
     class Meta:
         model = Listing
         fields = '__all__'
-        #exclude = ['list_date']
         exclude = ['contributor', 'type', 'list_date']
+
 
 class EditListingForm(ModelForm):
 	class Meta:
 		model = Listing
 		fields = '__all__'
-		#exclude = ['username', 'items_per_page']
+		exclude = ['contributor', 'type', 'list_date']
 
+class EproofForm(ModelForm):
+	class Meta:
+		model = Eproof
+		fields = '__all__'
+		exclude = ['contributor', 'list_date']

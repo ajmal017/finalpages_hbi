@@ -9,18 +9,13 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from members.models import account_activation_token
-from members.models import MemberProfile
+from members.models import Member
 from django.views.generic import View
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.utils.safestring import mark_safe
 from django.contrib.auth.decorators import login_required
-from blog.models import BlogPost
-from listings.models import Listing
-import validate_email
 from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
-
-
 
 class LoginView(View):
     def get(self, request):
@@ -39,12 +34,12 @@ class LoginView(View):
         if password == '':
             messages.add_message(request, messages.ERROR, 'Password is required')
             context['has_error'] = True
-        checkmember0 = MemberProfile.objects.filter(username=username).count()
+        checkmember0 = Member.objects.filter(username=username).count()
         #print("username=", username)
         #print("count checkmember0=",checkmember0)
         if checkmember0 != 0:
             #print ("Member EXIST!")
-            checkmember = MemberProfile.objects.get(username=username)
+            checkmember = Member.objects.get(username=username)
             #print('checkmember = ', checkmember)
             #print('checkmember is_active = ', checkmember.is_active)
             # user = authenticate(request, username=username, password=password)
@@ -109,13 +104,13 @@ class RegistrationView(View):
         if password != password2:
             messages.add_message(request, messages.ERROR, 'Passwords do not match')
             context['has_error'] = True
-        if MemberProfile.objects.filter(username=email).exists():
+        if Member.objects.filter(username=email).exists():
             messages.add_message(request, messages.ERROR, 'email is taken, use another one')
             context['has_error'] = True
         if context['has_error']:
             return render(request, 'hbi-homepage/signup.html', context, status=400)
 
-        new_user = MemberProfile.objects.create_user(username=email, first_name=first_name, last_name=last_name, password=password2)
+        new_user = Member.objects.create_user(username=email, first_name=first_name, last_name=last_name, password=password2)
         #new_user.set_password(password)
         new_user.is_active = False
         new_user.save()
@@ -156,7 +151,7 @@ class RequestResetLinkView(View):
             messages.add_message(request, messages.ERROR, 'please provide an email')
             return render(request, 'hbi-homepage/request-reset-password.html', context, status=400)
         current_site = get_current_site(request)
-        user = MemberProfile.objects.filter(username=email).first()
+        user = Member.objects.filter(username=email).first()
         print('2. user = ', user)
         if not user:
             messages.add_message(request, messages.ERROR, 'Details not found,please consider a signup')
@@ -185,8 +180,8 @@ class CompletePasswordChangeView(View):
     def get(self, request, uidb64, token):
         try:
             uid = force_text(urlsafe_base64_decode(uidb64))
-            user = MemberProfile.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, MemberProfile.DoesNotExist):
+            user = Member.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, Member.DoesNotExist):
             user = None
         if user is None or not account_activation_token.check_token(user, token):
             messages.add_message(request, messages.WARNING, 'Link is no longer valid,please request a new one')
@@ -197,7 +192,7 @@ class CompletePasswordChangeView(View):
         context = {'uidb64': uidb64, 'token': token}
         try:
             uid = force_text(urlsafe_base64_decode(uidb64))
-            user = MemberProfile.objects.get(pk=uid)
+            user = Member.objects.get(pk=uid)
             password = request.POST.get('password')
             password2 = request.POST.get('password2')
             if len(password) < 6:
@@ -220,13 +215,13 @@ class RequestActivationCode(View):
 
     def post(self, request):
         username = request.POST.get('username')
-        checkmember0 = MemberProfile.objects.filter(username=username).count()
+        checkmember0 = Member.objects.filter(username=username).count()
         #print('At requestActivationCode')
         #print('1. username=', username)
         #print("2. count checkmember0=", checkmember0)
         if checkmember0 != 0:
             #print ('3. User EXIST!!')
-            checkmember = MemberProfile.objects.get(username=username)
+            checkmember = Member.objects.get(username=username)
             mail_subject = 'HBI DigitalHub: Activate Your Account (Immediate Action Needed)'
             current_site = get_current_site(request)
             message = render_to_string('hbi-homepage/acc_active_email.html', {
@@ -254,7 +249,7 @@ class RequestActivationCode(View):
 def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
-        user = MemberProfile.objects.get(pk=uid)
+        user = Member.objects.get(pk=uid)
     except(TypeError, ValueError, OverflowError):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
@@ -272,7 +267,7 @@ class MySettingsView(View):
     def get(self, request):
         if request.user.is_authenticated:
             print("At GET: MySettingsView")
-            my_qs = MemberProfile.objects.filter(username=request.user)
+            my_qs = Member.objects.filter(username=request.user)
             print('1. first_name=', my_qs[0].first_name)
             print('2. items_per_page=', my_qs[0].items_per_page)
             print('3. brochure_country=', my_qs[0].brochure_country)
@@ -284,7 +279,7 @@ class MySettingsView(View):
     def post(self, request):
         if request.user.is_authenticated:
             print("At POST: MySettingsView")
-            my_qs = MemberProfile.objects.filter(username=request.user).get()
+            my_qs = Member.objects.filter(username=request.user).get()
             print('4. last_name=', my_qs.last_name)
             print('5. items_per_page=', my_qs.items_per_page)
             radioinline = request.POST.get('radio-inline')
@@ -321,7 +316,7 @@ def myprofile(request):
 
 
     if request.user.is_authenticated:
-        my_qs = MemberProfile.objects.filter(username=request.user)
+        my_qs = Member.objects.filter(username=request.user)
         context = {"title": "My Profile",
                    'blog_list': my_qs,
                    'department': department_choices,

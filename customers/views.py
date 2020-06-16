@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import EditCustomerForm, CreateCustomerForm
 from .models import Customer
-from members.models import MemberProfile
+from members.models import Member
 
 def delete_customer(request, customer_id):
     selected_customer = get_object_or_404(Customer, pk=customer_id)
@@ -26,8 +26,8 @@ def create_customer(request):
             print('3. form agent=', form.cleaned_data['agent'])
             form.save()
             selected_customer = get_object_or_404(Customer, name=form.cleaned_data['name'])
-            my_qs = MemberProfile.objects.filter(username=request.user)
-            selected_customer.salesrep = my_qs[0]  #assign a MemberProfile object into selected_customer.salesrep
+            my_qs = Member.objects.filter(username=request.user)
+            selected_customer.salesrep = my_qs[0]  #assign a Member object into selected_customer.salesrep
             selected_customer.save()
             return render(request, "hbi-dashboard/dashboard.html")
         else:

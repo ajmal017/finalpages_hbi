@@ -5,5 +5,5 @@ django-rest-auth==0.9.5
 python-dotenv
 django-cors-headers==2.5.2
 django-allauth
-django-crispy-forms==1.7.2
-validate_email
+asgiref==3.2.3
+django-cors-headers==3.2.1

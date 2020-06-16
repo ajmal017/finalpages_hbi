@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from members.models import MemberProfile
+from members.models import Member
 
 DOCUMENT_CHOICES = (
     ("PROPOSAL", "proposal"),
@@ -30,9 +30,12 @@ COUNTRY_CHOICES = (
     ("VIETNAM", "Vietnam"),
 )
 
+
+
+
 class Listing(models.Model):
     title = models.CharField(max_length=100)
-    contributor = models.ForeignKey(MemberProfile, null=True, blank=True, on_delete=models.CASCADE)
+    contributor = models.ForeignKey(Member, null=True, blank=True, on_delete=models.CASCADE)
     description = models.TextField()
     type = models.CharField(max_length=20, choices=DOCUMENT_CHOICES, default="miscellaneous")
     country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="All")
@@ -48,6 +51,26 @@ class Listing(models.Model):
       return self.title
 
     def delete(self, *args, **kwargs):
-      self.pdf.delete()
+      self.docfile.delete()
       self.cover.delete()
+      self.preview_1.delete()
+      self.preview_2.delete()
+      self.preview_3.delete()
+      super().delete(*args, **kwargs)
+
+
+class Eproof(models.Model):
+    docfile = models.FileField(upload_to='documents/docfiles/%Y/%m/%d/')
+    cardimage = models.FileField(upload_to='documents/docfiles/%Y/%m/%d/')
+    title = models.CharField(max_length=100)
+    contributor = models.ForeignKey(Member, null=True, blank=True, on_delete=models.CASCADE)
+    list_date = models.DateTimeField(default=timezone.now, blank=False)
+    is_published = models.BooleanField(default=True)
+
+    def __str__(self):
+      return self.title
+
+    def delete(self, *args, **kwargs):
+      self.docfile.delete()
+      self.cardimage.delete()
       super().delete(*args, **kwargs)

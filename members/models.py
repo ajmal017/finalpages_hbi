@@ -28,7 +28,7 @@ COUNTRY_CHOICES = (
     ("VIETNAM", "Vietnam"),
 )
 
-class MemberProfileManager(BaseUserManager):
+class MemberManager(BaseUserManager):
     """Manager for member profiles"""
 
     def create_user(self, username, first_name, last_name, password=None):
@@ -71,7 +71,7 @@ DEPARTMENT_CHOICES = (
     ("Legal", "LEGAL"),
 )
 
-class MemberProfile(AbstractBaseUser, PermissionsMixin):
+class Member(AbstractBaseUser, PermissionsMixin):
     username = models.EmailField(max_length=100, unique=True)
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
@@ -86,7 +86,7 @@ class MemberProfile(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_developer = models.BooleanField(default=False)
     is_seller = models.BooleanField(default=False)
-    objects = MemberProfileManager()
+    objects = MemberManager()
 
     brochure_country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="ALL COUNTRIES")
     certificate_country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="ALL COUNTRIES")
