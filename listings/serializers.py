@@ -4,4 +4,4 @@ from .models import Listing
 class ListingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Listing
-		fields ='__all__'
+		fields = ['id', 'title', 'type', 'list_date', 'is_published']

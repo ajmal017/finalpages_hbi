@@ -41,8 +41,6 @@ from listings.views import (
     search,
 
     mydocumentslist,
-    testdocuments,
-
     mydocumentsOverview,
     mydocumentstaskList,
     mydocumentstaskDetail,
@@ -88,7 +86,7 @@ from frontend.views import list
 
 urlpatterns = [
 
-    path('testdocuments/', testdocuments),
+    path('gallery/', gallery, name="gallery"),
 
     path('api/', apiOverview, name="api-overview"),
     path('mydocuments-api/', mydocumentsOverview),

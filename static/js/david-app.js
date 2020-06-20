@@ -33,7 +33,7 @@ function getCookie(name) {
 		        }
 		    }
 		    return cookieValue;
-		}
+	}
 		var csrftoken = getCookie('csrftoken');
 
 		var activeItem = null
@@ -55,7 +55,7 @@ buildList()
 			fetch(url)
 			.then((resp) => resp.json())
 			.then(function(data){
-				console.log('Data:', data)  //display at console
+				console.log('Data001:', data)  //display at console
             // render the data into the document
 				var list = data
 				for (var i in list){
@@ -71,6 +71,8 @@ buildList()
           // render title
 
 					var title = `<span class="title">${list[i].title}</span>`
+					var type = `<span class="type">${list[i].type}</span>`
+					var list_date = `<span class="list_date">${list[i].list_date.substring(0,10)}</span>`
                     var check01
 
                     /*
@@ -78,11 +80,14 @@ buildList()
 						title = `<strike class="title">${list[i].title}</strike>`
 					}*/
 
+
+                    //console.log('** item =',list[i].title, list[i].is_published );
 					if (list[i].is_published == true){
-						check01 = `<input type="checkbox" name="{{ item.id }}" id="{{ item.id }}" checked><span><label for="{{ item.id }}"></label></span>`
+
+						check01 = `<input type="checkbox" name="name-${i}" id="${i}" checked><span><label for="${i}"></label></span>`
                     }
                     else{
-                        check01 = `<input type="checkbox" name="{{ item.id }}" id="{{ item.id }}"><span><label for="{{ item.id }}"></label></span>`
+                        check01 = `<input type="checkbox" name="name-${i}" id="${i}"><span><label for="${i}"></label></span>`
                     }
 
                     // console.log('item =',i,list[i].is_published);
@@ -91,38 +96,35 @@ buildList()
 					var item = `
 						<div id="data-row-${i}" class="task-wrapper flex-wrapper">
 
+
                             <!-- display title -->
 							<div style="flex:7">${title}</div>
 
-                            <!-- display title -->
-							<div style="flex:3">
+                            <!-- display type -->
+							<div style="flex:6">${type}</div>
+
+                            <!-- display list_date -->
+							<div style="flex:5">${list_date}</div>
+
+                            <!-- display switch -->
+							<div id="switch-row-${i}" style="flex:3">
 							    <div class="switch-button switch-button-xs">
 							        ${check01}
                                  </div>
 							</div>
 
 							<div style="flex:2">
-							    <a href="${urledit}${list[i].id}" class="badge badge-pill badge-success">Edit</a>
-								<!-- <button class="btn btn-sm btn-outline-info edit">Edit</button>  -->
+							    <!-- <a href="${urledit}${list[i].id}" class="badge badge-pill badge-success">Edit</a>  -->
+                                    <a href="${urledit}${list[i].id}" class="btn btn-sm btn-outline-dark edit">Edit</a>
 							</div>
-
 							<div style="flex:1">
 								<button class="btn btn-sm btn-outline-dark delete">Delete</button>
 							</div>
-
 						</div>
-
-
-
 					`
 					wrapper.innerHTML += item
-
-
-
 				}
 
-
-//******************************************************************************************************
 
 if (list_snapshot.length > list.length){
 					for (var i = list.length; i < list_snapshot.length; i++){
@@ -134,7 +136,8 @@ if (list_snapshot.length > list.length){
 
 
 				for (var i in list){
-					var deleteBtn = document.getElementsByClassName('delete')[i]
+					var deleteBtn = document.getElementsByClassName('btn btn-sm btn-outline-dark delete')[i]
+					var publishSwitch = document.getElementById(`switch-row-${i}`)
 					var title = document.getElementsByClassName('title')[i]
 
 					deleteBtn.addEventListener('click', (function(item){
@@ -143,12 +146,23 @@ if (list_snapshot.length > list.length){
 						}
 					})(list[i]))
 
+					publishSwitch.addEventListener('click', (function(item){
+						return function(){
+							changePublishItem(item)
+						}
+					})(list[i]))
+
+					title.addEventListener('click', (function(item){
+						return function(){
+							clickTitleItem(item)
+						}
+					})(list[i]))
+
+
 				}
 
-//********************************************************************************************************
-
 function deleteItem(item){
-			console.log('Delete clicked item =', list[i].id)
+			console.log('Delete clicked item =', item)
 
 			fetch(`http://127.0.0.1:8000/mydocuments/task-delete/${item.id}/`,
 			{
@@ -160,10 +174,41 @@ function deleteItem(item){
 			}).then((response) => {
 				buildList()
 			})
+}
+
+function clickTitleItem(item){
+			console.log('clicked item =', item.is_published)
 		}
 
 
 
+function changePublishItem(item){
+            //console.log('item              =>', item)
+			console.log('1. item.id           =>', item.id)
+			console.log('2. item.is_published =>', item.is_published)
+
+            var new_ispublished = !item.is_published
+			//item.is_published = !item.is_published
+			console.log('3. new_ispublished =>', new_ispublished)
+
+
+
+			//fetch(`http://127.0.0.1:8000/mydocuments/task-update/${item.id}/`, {
+			fetch(`http://127.0.0.1:8000/mydocuments/task-update/${item.id}/`,
+			{
+				method:'POST',
+				headers:{
+					'Content-type':'application/json',
+					'X-CSRFToken':csrftoken,
+				},
+				body:JSON.stringify({'title':item.title, 'is_published':new_ispublished})
+			}).then((response) => {
+				buildList()
+			})
+
+
+
+		}
 
 })
 }

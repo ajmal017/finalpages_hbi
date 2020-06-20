@@ -12,48 +12,51 @@ from .serializers import ListingSerializer
 
 @api_view(['GET'])
 def mydocumentsOverview(request):
-	api_urls = {
-		'List':'/task-list/',
-		'Detail View':'/task-detail/<str:pk>/',
-		'Create':'/task-create/',
-		'Update':'/task-update/<str:pk>/',
-		'Delete':'/task-delete/<str:pk>/',
-		}
-	return Response(api_urls)
+    api_urls = {
+        'List':'/task-list/',
+        'Detail View':'/task-detail/<str:pk>/',
+        'Create':'/task-create/',
+        'Update':'/task-update/<str:pk>/',
+        'Delete':'/task-delete/<str:pk>/',
+        }
+    return Response(api_urls)
 
 @api_view(['GET'])
 def mydocumentstaskList(request):
-	tasks = Listing.objects.all().order_by('-id')
-	serializer = ListingSerializer(tasks, many=True)
-	return Response(serializer.data)
+    tasks = Listing.objects.all().order_by('-id')
+    serializer = ListingSerializer(tasks, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def mydocumentstaskDetail(request, pk):
-	tasks = Listing.objects.get(id=pk)
-	serializer = ListingSerializer(tasks, many=False)
-	return Response(serializer.data)
+    tasks = Listing.objects.get(id=pk)
+    serializer = ListingSerializer(tasks, many=False)
+    return Response(serializer.data)
 
 
 @api_view(['POST'])
 def mydocumentstaskCreate(request):
-	serializer = ListingSerializer(data=request.data)
-	if serializer.is_valid():
-		serializer.save()
-	return Response(serializer.data)
+    serializer = ListingSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
 
 @api_view(['POST'])
 def mydocumentstaskUpdate(request, pk):
-	task = Listing.objects.get(id=pk)
-	serializer = ListingSerializer(instance=task, data=request.data)
-	if serializer.is_valid():
-		serializer.save()
-	return Response(serializer.data)
+    task = Listing.objects.get(id=pk)
+    serializer = ListingSerializer(instance=task, data=request.data)
+    if serializer.is_valid():
+        print('Serializer is valid')
+        serializer.save()
+    else:
+        print('Serializer is NOT valid')
+    return Response(serializer.data)
 
 @api_view(['DELETE'])
 def mydocumentstaskDelete(request, pk):
-	task = Listing.objects.get(id=pk)
-	task.delete()
-	return Response('Item succsesfully delete!')
+    task = Listing.objects.get(id=pk)
+    task.delete()
+    return Response('Item succsesfully delete!')
 
 
 
@@ -66,11 +69,11 @@ def mydocumentstaskDelete(request, pk):
 
 @login_required
 def mydocumentslist(request):
-	if request.user.is_authenticated:
-		my_qs = Member.objects.filter(username=request.user)
-		qs = Listing.objects.filter(contributor=my_qs[0])
-		context = {"title": "HBI List.html", 'my_qs': my_qs}
-		return render(request, "hbi-dashboard/list.html", context)
+    if request.user.is_authenticated:
+        my_qs = Member.objects.filter(username=request.user)
+        qs = Listing.objects.filter(contributor=my_qs[0])
+        context = {"title": "HBI List.html", 'my_qs': my_qs}
+        return render(request, "hbi-dashboard/list.html", context)
 
 
 
@@ -88,20 +91,11 @@ def alldocuments(request):
         return render(request, "hbi-dashboard/alldocuments.html", context)
 
 @login_required
-def testdocuments(request):
-    if request.user.is_authenticated:
-        qs = Listing.objects.all()
-        context = {"title": "Blank001", 'blog_list': qs }
-        return render(request, "hbi-dashboard/testdocument.html", context)
-
-
-
-@login_required
 def mydocuments(request):
     if request.user.is_authenticated:
         my_qs = Member.objects.filter(username=request.user)
         qs = Listing.objects.filter(contributor=my_qs[0])
-        context = {"title": "My Documents-16-6-20", 'listing': qs}
+        context = {"title": "My Documents", 'listing': qs}
         return render(request, "hbi-dashboard/mydocuments.html", context)
 
 @login_required

@@ -66,7 +66,9 @@ def contact_page(request):
     }
     return render(request, "form.html", context)
 
-
+def gallery(request):
+    context = {"title": "Hengbao Cards Gallery"}
+    return render(request, 'hbi-homepage/gallery.html', context)
 
 
 def index(request):
