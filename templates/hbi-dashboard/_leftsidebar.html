@@ -13,9 +13,13 @@
                             <li class="nav-divider">
                                 Menu
                             </li>
+
+                            <!--
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'gallery' %}"><i class="far fa-id-card"></i>Cards Gallery</a>
                             </li>
+                            -->
+
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'alldocuments' %}"><i class="fas fa-copy"></i>All Documents</a>
                             </li>
@@ -50,21 +54,22 @@
                                         <li class="nav-item">
                                             <a class="nav-link" href="{% url 'upload_proposal' %}">Proposals</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="{% url 'upload_quotation' %}">Quotations</a>
-                                        </li>
+
                                     </ul>
                                 </div>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'myprofile' %}"><i class="fa fa-fw fa-user-circle"></i>My Profile</a>
+                            </li>
+                            <!--
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'mycustomers' %}"><i class="fas fa-users"></i>My Customers</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'myprofile' %}"><i class="fa fa-fw fa-user-circle"></i>My Profile</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" href="{% url 'mysettings' %}"><i class="fas fa-cog"></i>My Settings</a>
                             </li>
+                            -->
 
                         </ul>
                     </div>

@@ -12,8 +12,9 @@ from members.views import (
     CompletePasswordChangeView,
     RequestActivationCode,
     MySettingsView,
+    edit_myprofile,
+    testprofile,
     activate,
-    myprofile,
 )
 
 from customers.views import (
@@ -30,7 +31,6 @@ from listings.views import (
     upload_manual,
     upload_powerpoint,
     upload_proposal,
-    upload_quotation,
     mydocuments,
     delete_document,
     edit_document,
@@ -53,9 +53,7 @@ from listings.views import (
 
 from .views import (
     index,
-    dashboard,
     gallery,
-    forecast,
     blank,
 )
 
@@ -135,7 +133,6 @@ urlpatterns = [
     path('upload-manual/', upload_manual, name ='upload_manual'),
     path('upload-proposal/', upload_proposal, name ='upload_proposal'),
     path('upload-powerpoint/', upload_powerpoint, name ='upload_powerpoint'),
-    path('upload-quotation/', upload_quotation, name ='upload_quotation'),
 
     path('mydocuments/', mydocuments, name ='mydocuments'),
     path('mydocuments/delete/<int:listing_id>', delete_document, name='delete_document'),
@@ -148,8 +145,11 @@ urlpatterns = [
 
 
     #function is located is at members.views
-    path('myprofile/', myprofile, name='myprofile'),
+    path('testprofile/', testprofile),
+    path('myprofile/', edit_myprofile, name='myprofile'),
+
     path('mysettings/', MySettingsView.as_view(), name='mysettings'),
+
     path('signup/', RegistrationView.as_view(), name='signup'),
     path('members/login/', LoginView.as_view(), name='login'),
     path('request-reset/', RequestResetLinkView.as_view(), name='reset-password'),
@@ -170,11 +170,9 @@ urlpatterns = [
 ## homepage (prior to successful login) ##
     path('', index, name='home'),
     path('gallery/', gallery, name='gallery'),
-    path('dashboard/', dashboard, name='dashboard'),
     path('blank/', blank, name ='blank'),
     path('sendingmail/', sending_mail),                #test sending email
     #path('listings/', include('listings.urls')),       #127.0.0.1:8000/listings (btre)
-    path('forecast/', forecast, name='forecast'),
     path('admin/', admin.site.urls),
     path('members/', include('django.contrib.auth.urls')),
 ]

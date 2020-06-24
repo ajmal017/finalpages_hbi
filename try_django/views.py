@@ -16,12 +16,8 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.utils.safestring import mark_safe
 from django.contrib.auth.decorators import login_required
-from listings.models import Listing
+from listings.models import Listing, Product
 from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
-from datetime import datetime
-
-from listings.forms import ListingForm
-from django.utils import timezone
 
 @login_required
 def blank(request):
@@ -29,26 +25,13 @@ def blank(request):
         context = {"title": "BLANK"}
         return render(request, "hbi-dashboard/blank.html", context)
 
-
-
-def forecast(request):
-    qs = Listing.objects.all()
-    context = {"title": "testcard.html", 'blog_list': qs}
-    return render(request, "hbi-dashboard/cards.html", context)
-
-
-
-@login_required
-def dashboard(request):
-    if request.user.is_authenticated:
-        context = {"title": "My Dashboard"}
-        return render(request, "hbi-dashboard/dashboard.html", context)
-
-@login_required
 def gallery(request):
-    if request.user.is_authenticated:
-        context = {"title": "Cards Gallery"}
-        return render(request, "hbi-dashboard/gallery.html", context)
+    qs = Product.objects.filter(type="EPROOF")
+    context = {
+        "title": "Cards Gallery",
+        'blog_list': qs
+        }
+    return render(request, "hbi-dashboard/gallery.html", context)
 
 
 def about_page(request):
@@ -66,6 +49,12 @@ def contact_page(request):
     }
     return render(request, "form.html", context)
 
+
+def nav(request):
+    context = {"title": "NAV"}
+    return render(request, 'hbi-homepage/base.html', context)
+
+
 def gallery(request):
     context = {"title": "Hengbao Cards Gallery"}
     return render(request, 'hbi-homepage/gallery.html', context)
@@ -75,7 +64,8 @@ def index(request):
     if request.user.is_authenticated:
         my_qs = Member.objects.filter(username=request.user)
         context = {"title": "index.html", 'blog_list': my_qs}
-        return render(request, 'hbi-dashboard/dashboard.html', context)
+        #return render(request, 'hbi-dashboard/dashboard.html', context)
+        return redirect('alldocuments')
     else:
         qs = Listing.objects.all()
         context = {"title": "index.html", 'blog_list': qs}

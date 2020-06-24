@@ -44,6 +44,17 @@
                             <img class="img-fluid" src="{% static 'hbi-homepage_static/unsplash15.jpg' %}">
                         </div>
                     </div>
+
+        {% for listing in blog_list %}
+
+                    <div class="carousel-item">
+                        <div class="col-lg-4 col-md-6">
+                            <img class="img-fluid" src="{{ listing.image2_file.url }}">
+                        </div>
+                    </div>
+
+        {% endfor %}
+
                     <div class="carousel-item">
                         <div class="col-lg-4 col-md-6">
                             <img class="img-fluid" src="{% static 'hbi-homepage_static/unsplash10.jpg' %}">

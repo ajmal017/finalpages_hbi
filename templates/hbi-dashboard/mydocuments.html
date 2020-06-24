@@ -75,11 +75,8 @@ h1, h2, h3, h4, h5, p, span, strike{
 
     <div class="dashboard-main-wrapper">
 
-        {% include 'hbi-dashboard/_leftsidebar.html' %}
+     {% include 'hbi-dashboard/_leftsidebar.html' %}
 
-        <!-- ============================================================== -->
-        <!-- wrapper  -->
-        <!-- ============================================================== -->
         <div class="dashboard-wrapper">
             <div class="dashboard-finance">
                 <div class="container-fluid dashboard-content">
@@ -88,62 +85,35 @@ h1, h2, h3, h4, h5, p, span, strike{
                     <!-- ============================================================== -->
                     <div class="row">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                            <div class="page-header">
-                                <h2 class="pageheader-title">{{ title }}</h2>
-                                <p class="pageheader-text">Proin placerat ante duiullam scelerisque a velit ac porta, fusce sit amet vestibulum mi. Morbi lobortis pulvinar quam.</p>
-
-                            </div>
+                            <div class="page-header"><h2 class="pageheader-title">{{ title }}</h2></div>
                         </div>
                     </div>
 
- <!-- START -->
+                        <div class="row">
+                        <!-- ============================================================== -->
+                        <!-- My Documents Table Header                                      -->
+                        <!-- ============================================================== -->
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <div class="card">
+                                    <h5 class="card-header">
+                                        <div class="task-wrapper flex-wrapper strong">
 
-
-
-<div class="row">
-<!-- ============================================================== -->
-<!-- My Documents Table                                             -->
-<!-- ============================================================== -->
-    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-        <div class="card">
-            <h5 class="card-header">
-
-                <div class="task-wrapper flex-wrapper strong">
-
-                            <!-- display title -->
-							<div style="flex:7"><strong>TITLE</strong></div>
-
-                            <!-- display type -->
-							<div style="flex:6"><strong>TYPE</strong></div>
-
-                            <!-- display list_date -->
-							<div style="flex:5"><strong>DATE</strong></div>
-
-                            <!-- display switch -->
-							<div style="flex:3"><strong>PUBLISH</strong></div>
-
-							<div style="flex:2"><strong>EDIT</strong></div>
-							<div style="flex:1"><strong>DELETE</strong></div>
-                </div>
-
-            </h5>
-            <div id="list-wrapper"></div>
-        </div>
-
-    </div>
- </div>
-
-
-
-
-
-
-
-
+                                                    <div style="flex:7"><strong>TITLE</strong></div>
+                                                    <div style="flex:6"><strong>TYPE</strong></div>
+                                                    <div style="flex:5"><strong>DATE</strong></div>
+                                                    <div style="flex:3"><strong>PUBLISH</strong></div>
+                                                    <div style="flex:2"><strong>EDIT</strong></div>
+                                                    <div style="flex:1"><strong>DELETE</strong></div>
+                                        </div>
+                                    </h5>
+                                    <div id="list-wrapper"></div>
+                                </div>
+                            </div>
+                         </div>
             </div>
-            {% include 'hbi-dashboard/_footer.html' %}       <!-- footer -->
+            {% include 'hbi-dashboard/_footer.html' %}
         </div>
-        </div>
+      </div>
     </div>
 
 <script src="{% static 'js/david-app.js' %}"></script>

@@ -77,15 +77,12 @@ class Member(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=100, blank=True)
     position = models.CharField(max_length=100, blank=True)
     department = models.CharField(max_length=20, choices=DEPARTMENT_CHOICES, default="Sales")
-    #photo = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
-    photo = models.ImageField(upload_to='photos/%Y/%m/%d/', default="photos/pic1.png")
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d/', default="photos/images/pic1.png")
     description = models.TextField(blank=True)
-    website = models.URLField(max_length=200)
     join_date = models.DateTimeField(default=timezone.now, blank=True)
-    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    is_developer = models.BooleanField(default=False)
-    is_seller = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=True)
+    is_activated = models.BooleanField(default=False)
     objects = MemberManager()
 
     brochure_country = models.CharField(max_length=20, choices=COUNTRY_CHOICES, default="ALL COUNTRIES")
@@ -113,6 +110,9 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.first_name
+
+    def get_initials(self):
+        return self.first_name[0:1] + self.last_name[0:1]
 
     def __str__(self):
         return self.username

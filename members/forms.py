@@ -27,7 +27,25 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class EditMemberForm(ModelForm):
-	class Meta:
-		model = Member
-		fields = '__all__'
-		exclude = ['username', 'items_per_page']
+
+    class Meta:
+        model = Member
+        fields = ('position', 'department', 'photo')
+
+
+        widgets = {
+            'position': forms.TextInput(attrs={'class': 'form-control'}),
+            #'department': forms.TextInput(attrs={'class': 'form-control'}),
+            #'photo': forms.FileInput(attrs={'class': 'form-control-file', 'required': False,}),
+        }
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Member
+        fields = ('position', 'department', 'photo')
+        widgets = {
+            'position': forms.TextInput(attrs={'class': 'form-control'}),
+
+            'photo':forms.FileInput(attrs={'class':'form-control', 'required': False, } )
+                    }

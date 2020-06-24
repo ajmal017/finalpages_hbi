@@ -42,7 +42,7 @@
                                             <div class="product-thumbnail">
                                                 <div class="product-img-head">
                                                     <div class="product-img">
-                                                             <img src="{{ listing.cover.url }}" alt="" class="card-img-top123"></div>
+                                                             <img src="{{ listing.cover_file.url }}" alt="" class="card-img-top123"></div>
                                                    <div class="ribbon ribbon-top-right"><span>{{ listing.type }}</span></div>
                                                 </div>
                                                 <div class="product-content">
@@ -112,17 +112,29 @@
                                                 <input type="checkbox" class="custom-control-input" id="cat-6">
                                                 <label class="custom-control-label" for="cat-4">Proposal</label>
                                             </div>
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="cat-7">
-                                                <label class="custom-control-label" for="cat-5">Quotation</label>
-                                            </div>
-                                </div>
 
                                 </div>
+
+
+
+                                </div>
+
+
+
+
+
+
 
                                 <div class="product-sidebar-widget">
                                     <!-- <a href="#" class="btn btn-outline-light">Search</a>  -->
-                                    <a href="{{ blog_item.pdf.url }}" class="btn btn-warning" download>Search</a>
+
+                                               <div class="input-group mb-3">
+                                                <input type="text" class="form-control">
+                                                <div class="input-group-append">
+                                                    <button type="button" class="btn btn-primary">Search</button>
+                                                </div>
+                                            </div>
+
                                 </div>
                             </div>
                         </div>
@@ -184,5 +196,6 @@
         <!-- end wrapper  -->
         <!-- ============================================================== -->
     </div>
+
 
 {% endblock %}

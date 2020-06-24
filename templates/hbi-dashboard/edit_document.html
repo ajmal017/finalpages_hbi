@@ -44,7 +44,38 @@
 
                                         <form method="POST" enctype="multipart/form-data">
                                             {% csrf_token %}
-                                            {{form.as_p}}
+
+                                            <p><strong>Document File <br>
+                                                {{ form.document_file }}
+                                            </strong></p>
+
+                                            <p><strong>Preview 1 <br>
+                                                {{ form.preview_1 }}
+                                            </strong></p>
+
+                                            <p><strong>Preview 2 <br>
+                                                {{ form.preview_2 }}
+                                            </strong></p>
+
+                                            <p><strong>Preview 3 <br>
+                                                {{ form.preview_3 }}
+                                            </strong></p>
+
+                                             <p><strong>Cover Document <br>
+                                                {{ form.cover }}
+                                            </strong></p>
+
+                                            <p><strong>Title <br>
+                                                {{ form.title }}
+                                            </strong></p>
+
+                                            <p><strong>Description <br>
+                                                {{ form.description }}
+                                            </strong></p>
+
+
+
+
 
                                         <input class="btn btn-primary" type="submit" name="Update Information" value="Save Changes">
                                         </form>
@@ -65,5 +96,7 @@
         <!-- end wrapper  -->
         <!-- ============================================================== -->
     </div>
+
+<script src="{% static 'js/david2-app.js' %}"></script>
 
 {% endblock %}

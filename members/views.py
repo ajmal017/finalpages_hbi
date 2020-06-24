@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template.loader import get_template
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -16,13 +16,18 @@ from django.core.mail import send_mail
 from django.utils.safestring import mark_safe
 from django.contrib.auth.decorators import login_required
 from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
+from .forms import EditMemberForm, ProfileForm
 
 class LoginView(View):
     def get(self, request):
-        return render(request, 'hbi-homepage/login.html')
+        context = {
+            'title': 'HBI Login'
+        }
+        return render(request, 'hbi-homepage/login.html', context)
 
     def post(self, request):
         context = {
+            'title': 'HBI Login',
             'data': request.POST,
             'has_error': False
         }
@@ -41,36 +46,58 @@ class LoginView(View):
             #print ("Member EXIST!")
             checkmember = Member.objects.get(username=username)
             #print('checkmember = ', checkmember)
-            #print('checkmember is_active = ', checkmember.is_active)
+            #print('checkmember is_activated = ', checkmember.is_activated)
             # user = authenticate(request, username=username, password=password)
-            if checkmember is not None and checkmember.is_active == True:  # member exist and is_active
-                #print("Member exist, is_active")
-                user = authenticate(request, username=username, password=password)
-                if not context['has_error'] and not user:
-                    messages.add_message(request, messages.ERROR, 'Incorrect Password, Please Re-try')
-                    context['has_error'] = True
-                    return render(request, 'hbi-homepage/login.html')
-                else:
-                    login(request, user)
-                    return redirect('dashboard')
-            elif checkmember is not None and checkmember.is_active == False:
+
+            if checkmember is not None and checkmember.is_activated == True:  # member exist and is_activated
+                if checkmember.is_approved == True:                           # member is approved by admininstrator
+                        #print("Member exist, is_activated")
+                        user = authenticate(request, username=username, password=password)
+                        if not context['has_error'] and not user:
+                            messages.add_message(request, messages.ERROR, 'Incorrect Password, Please Re-try')
+                            context = {
+                                'title': 'HBI Login',
+                                'has_error' : True
+                            }
+                            return render(request, 'hbi-homepage/login.html', context)
+                        else:
+                            login(request, user)
+                            return redirect('home')
+                else:                                                            # member is approved by admininstrator
+                    messages.add_message(request, messages.ERROR, 'Your membership is pending approval from Administrator, please try again later')
+                    context = {
+                        'title': 'HBI Login',
+                        'has_error': True
+                    }
+                    return render(request, 'hbi-homepage/login.html', context)
+
+            elif checkmember is not None and checkmember.is_activated == False:
                 #print("Member exist but the account not active!")
                 messages.info(request, mark_safe('Please check Email to activate your account.. <br> To re-send activation code, click <a href="http://127.0.0.1:8000/requestactivatecode/">HERE</a>'))
 
                 #messages.add_message(request, messages.ERROR,'Your account is not yet activated.. Please check your Email to activate <a href="http://127.0.0.1:8000/members/password_change">Change Password  </a>')
-                context['has_error'] = True
-                return render(request, 'hbi-homepage/login.html')
+                context = {
+                    'title': 'HBI Login',
+                    'has_error': True
+                }
+                return render(request, 'hbi-homepage/login.html', context)
             else:
                 # the authentication system was unable to verify the username and password
                 #print("Password is incorrect.")
                 messages.add_message(request, messages.ERROR, 'Wrong Password, Please re-try')
-                context['has_error'] = True
-                return render(request, 'hbi-homepage/login.html')
+                context = {
+                    'title': 'HBI Login',
+                    'has_error': True
+                }
+                return render(request, 'hbi-homepage/login.html', context)
         else:
             #print("Member DOES NOT EXIST!")
             messages.add_message(request, messages.ERROR, 'No Such Accounts, Please Re-Try')
-            context['has_error'] = True
-            return render(request, 'hbi-homepage/login.html')
+            context = {
+                'title': 'HBI Login',
+                'has_error': True
+            }
+            return render(request, 'hbi-homepage/login.html', context)
 
 
 class RegistrationView(View):
@@ -112,7 +139,7 @@ class RegistrationView(View):
 
         new_user = Member.objects.create_user(username=email, first_name=first_name, last_name=last_name, password=password2)
         #new_user.set_password(password)
-        new_user.is_active = False
+        new_user.is_activated = False
         new_user.save()
 
         current_site = get_current_site(request)
@@ -154,7 +181,7 @@ class RequestResetLinkView(View):
         user = Member.objects.filter(username=email).first()
         print('2. user = ', user)
         if not user:
-            messages.add_message(request, messages.ERROR, 'Details not found,please consider a signup')
+            messages.add_message(request, messages.ERROR, 'This email is not in our records, please re-try')
             return render(request, 'hbi-homepage/request-reset-password.html', context, status=404)
 
         mail_subject = 'HBI DigitalHub: Reset Your Password'
@@ -253,7 +280,7 @@ def activate(request, uidb64, token):
     except(TypeError, ValueError, OverflowError):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
+        user.is_activated = True
         user.save()
         #login(request, user)
         # return redirect('home')
@@ -299,27 +326,108 @@ class MySettingsView(View):
         else:
             return render(request, 'hbi-homepage/index.html')
 
-from members.forms import EditMemberForm
+
 
 @login_required
-def myprofile(request):
+def edit_myprofile_OLD(request):
     loginuser = request.user
     form = EditMemberForm(instance=loginuser)
-    department_choices = ['Sales',
-                          'Business Development',
-                          'Marketing',
-                          'Technical Support',
-                          'Research & Development',
-                          'Finance',
-                          'Legal'
-                          ]
-
-
     if request.user.is_authenticated:
         my_qs = Member.objects.filter(username=request.user)
+        department_choices = ['Sales',
+                              'Business Development',
+                              'Marketing',
+                              'Technical Support',
+                              'Research & Development',
+                              'Finance',
+                              'Legal'
+                              ]
         context = {"title": "My Profile",
                    'blog_list': my_qs,
                    'department': department_choices,
                    'form': form,
                    }
         return render(request, "hbi-dashboard/myprofile.html", context)
+
+
+def testprofile(request):
+    selected_document = get_object_or_404(Member, username=request.user)
+    form = EditMemberForm(instance=selected_document)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=selected_document)
+        if form.is_valid():
+            print('1. form position=', form.cleaned_data['position'])
+            print('2. form department=', form.cleaned_data['department'])
+            print('3. form photo=', form.cleaned_data['photo'])
+            form.save()
+            return render(request, "hbi-dashboard/dashboard.html")
+        else:
+            return render(request, "hbi-dashboard/testprofile.html")
+
+    context = {'form':form,
+               'title': 'My Profile',
+              }
+    return render(request, 'hbi-dashboard/testprofile.html', context)
+
+
+
+
+def edit_myprofile(request):
+    selected_document = get_object_or_404(Member, username=request.user)
+    form = EditMemberForm(instance=selected_document)
+
+    if request.method == 'POST':
+        form = EditMemberForm(request.POST, request.FILES, instance=selected_document)
+        if form.is_valid():
+            print('1. form position=', form.cleaned_data['position'])
+            print('2. form department=', form.cleaned_data['department'])
+            print('3. form photo=', form.cleaned_data['photo'])
+            form.save()
+            return render(request, "hbi-dashboard/dashboard.html")
+        else:
+            return render(request, "hbi-dashboard/myprofile.html")
+
+    context = {'form':form,
+               'title': 'My Profile',
+              }
+    return render(request, 'hbi-dashboard/myprofile.html', context)
+
+
+
+"""
+class MyProfileView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            department_choices = ['Sales',
+                                  'Business Development',
+                                  'Marketing',
+                                  'Technical Support',
+                                  'Research & Development',
+                                  'Finance',
+                                  'Legal'
+                                  ]
+            print("At GET: MyProfileView")
+            my_qs = Member.objects.filter(username=request.user)
+            print('1. first_name=', my_qs[0].first_name)
+            print('2. position=', my_qs[0].position)
+            print('3. department=', my_qs[0].department)
+            context = {"title": "My Profile12345", 'blog_list': my_qs, 'department': department_choices,}
+            return render(request, 'hbi-dashboard/myprofile.html', context)
+        else:
+            return render(request, 'hbi-homepage/index.html')
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            print("At POST: MyProfileView")
+            my_qs = Member.objects.filter(username=request.user).get()
+            print('4. last_name=', my_qs.last_name)
+            print('5. position=', my_qs.position)
+            print('6. department=', my_qs.department)
+            my_qs.save()
+            return render(request, 'hbi-dashboard/dashboard.html')
+        else:
+            return render(request, 'hbi-homepage/index.html')
+
+
+"""

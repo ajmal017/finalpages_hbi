@@ -1,5 +1,8 @@
 {% load static %}
 
+
+
+
 <!-- ============================================================== -->
 <!-- navbar -->
 <!-- ============================================================== -->
@@ -12,19 +15,21 @@
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-right-top">
                         <li class="nav-item">
-                            <div id="custom-search" class="top-search-bar">
-                                <input class="form-control" type="text" placeholder="Search..">
-                            </div>
+
+
+
                         </li>
 
 
                         <li class="nav-item dropdown nav-user">
-                            <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img  src="{% static 'hbi-dashboard_static/assets/images/avatar-1.jpg' %}" alt="A" class="user-avatar-md rounded-circle"></a>
+                            <!-- <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img  src="{% static 'hbi-dashboard_static/assets/images/home-1.jpg' %}" alt="A" class="user-avatar-md rounded-circle"></a> -->
+                            <a class="nav-link nav-user-img" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><button class="button-icon button6">{{ user.get_initials }}</button></a>
+
                             <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
                                 <div class="nav-user-info">
                                     <h5 class="mb-0 text-white nav-user-name">{{ user.first_name }} {{ user.last_name }}</h5>
                                 </div>
-                                <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>My Profile</a>
+                                <a class="dropdown-item" href="{% url 'myprofile' %}"><i class="fas fa-user mr-2"></i>My Profile</a>
                                 <!-- <a class="dropdown-item" href="#"><i class="fas fa-cog mr-2"></i>Setting</a>  -->
                                 <a class="dropdown-item" href="/members/logout"><i class="fas fa-power-off mr-2"></i>Logout</a>
                             </div>
