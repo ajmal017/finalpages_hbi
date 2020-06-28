@@ -23,6 +23,7 @@
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                             <div class="page-header">
                                 <h2 class="pageheader-title">{{ title }} </h2>
+                                <h3 class="pageheader-title">{{ subtitle }} </h3>
                             </div>
                         </div>
                     </div>
@@ -45,7 +46,7 @@
                                         <form method="POST" enctype="multipart/form-data">
                                             {% csrf_token %}
 
-                                            <p><strong>{{ type }} Document <br>
+                                            <p><strong>{{ selected_document.type }} Document <br>
                                 {{ form.document_file }}
                                </strong></p>
 

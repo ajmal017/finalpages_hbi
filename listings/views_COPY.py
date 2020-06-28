@@ -46,11 +46,11 @@ def mydocumentstaskUpdate(request, pk):
     task = Listing.objects.get(id=pk)
     serializer = ListingSerializer(instance=task, data=request.data)
     if serializer.is_valid():
-        print('Serializer is valid')
+        #print('Serializer is valid')
         serializer.save()
+        return Response(serializer.data)
     else:
-        print('Serializer is NOT valid')
-    return Response(serializer.data)
+        return Response('Error: Invalid serializer!')
 
 @api_view(['DELETE'])
 def mydocumentstaskDelete(request, pk):

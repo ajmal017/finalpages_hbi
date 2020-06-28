@@ -24,7 +24,9 @@ def mydocumentsOverview(request):
 
 @api_view(['GET'])
 def mydocumentstaskList(request):
-    tasks = Product.objects.all().order_by('-id')
+    #tasks = Product.objects.all().order_by('-id')
+    my_qs = Member.objects.filter(username=request.user)
+    tasks = Product.objects.filter(contributor=my_qs[0])
     serializer = ListingSerializer(tasks, many=True)
     return Response(serializer.data)
 
@@ -81,8 +83,9 @@ def alldocuments(request):
 def mydocuments(request):
     if request.user.is_authenticated:
         my_qs = Member.objects.filter(username=request.user)
+        #print("*. my_qs[0]", my_qs[0])
         qs = Listing.objects.filter(contributor=my_qs[0])
-        print ('qs=',qs)
+        #print ('*. qs=',qs)
         context = {"title": "My Documents", 'listing': qs}
         return render(request, "hbi-dashboard/mydocuments.html", context)
 
@@ -126,8 +129,9 @@ def edit_document(request, listing_id):
 
     else:
         context = {'form':form,
-                   'type': selected_document.type,
-                   'title': 'EDIT: ' +selected_document.title,
+                   'selected_document': selected_document,
+                   'title': 'Edit Document',
+                   'subtitle': selected_document.title,
                 }
         if selected_document.type == "EPROOF":
             return render(request, 'hbi-dashboard/edit_eproof.html', context)
@@ -158,7 +162,7 @@ def upload_eproof(request):
             return redirect('home')
     else:
         form = UploadEproofForm()
-        context = {"title": "Upload123 E-Proof Document",
+        context = {"title": "Upload EProof Document",
                    "form": form
                    }
         return render(request, 'hbi-dashboard/upload_eproof.html', context)

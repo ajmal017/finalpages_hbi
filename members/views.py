@@ -143,6 +143,8 @@ class RegistrationView(View):
         new_user.save()
 
         current_site = get_current_site(request)
+        print('1. current_site=',current_site)
+        print('2. current_site.domain=', current_site.domain)
         mail_subject = 'HBI DigitalHub: Activate Your Account'
         message = render_to_string('hbi-homepage/acc_active_email.html', {
             'user': new_user,
@@ -150,8 +152,6 @@ class RegistrationView(View):
             'uid': urlsafe_base64_encode(force_bytes(new_user.pk)),
             'token123': account_activation_token.make_token(new_user),
         })
-
-        #to_email = form.cleaned_data.get('email')
         send_mail(mail_subject, message, 'smilingideas@gmail.com', [email])
 
         #print("1. mail_subject=", mail_subject)
@@ -178,6 +178,8 @@ class RequestResetLinkView(View):
             messages.add_message(request, messages.ERROR, 'please provide an email')
             return render(request, 'hbi-homepage/request-reset-password.html', context, status=400)
         current_site = get_current_site(request)
+        print('3. current_site=', current_site)
+        print('4. current_site.domain=', current_site.domain)
         user = Member.objects.filter(username=email).first()
         print('2. user = ', user)
         if not user:
@@ -251,6 +253,8 @@ class RequestActivationCode(View):
             checkmember = Member.objects.get(username=username)
             mail_subject = 'HBI DigitalHub: Activate Your Account (Immediate Action Needed)'
             current_site = get_current_site(request)
+            print('5. current_site=', current_site)
+            print('6. current_site.domain=', current_site.domain)
             message = render_to_string('hbi-homepage/acc_active_email.html', {
                 'user': checkmember,
                 'domain': current_site.domain,
@@ -281,10 +285,17 @@ def activate(request, uidb64, token):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         user.is_activated = True
+
+
+        # send message to DigitalHub IT Administrator to inform new member activation require approval (set is_approved = True)
+        mail_subject = 'HBI DigitalHub: New Member Requiring Approval From IT Admin'
+        message = render_to_string('hbi-homepage/acc_activated_notice_email.html', {
+            'user': user,
+        })
+
+        send_mail(mail_subject, message, 'smilingideas@gmail.com', ['smilingideas@gmail.com'])
+
         user.save()
-        #login(request, user)
-        # return redirect('home')
-        ##return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
         messages.add_message(request, messages.SUCCESS, 'Thank you for your Email confirmation. Now you can login your account.')
         return redirect('login')
     else:

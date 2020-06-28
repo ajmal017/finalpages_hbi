@@ -170,3 +170,11 @@ object-fit: cover;
       }
 
     .button6 {border-radius: 60%;}
+
+* {
+ font-size: 100%;
+ font-family: Arial;
+
+ #font-family: 'Noto Sans TC', sans-serif;
+ #font-family: 'Roboto', sans-serif;
+}

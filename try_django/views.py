@@ -25,15 +25,6 @@ def blank(request):
         context = {"title": "BLANK"}
         return render(request, "hbi-dashboard/blank.html", context)
 
-def gallery(request):
-    qs = Product.objects.filter(type="EPROOF")
-    context = {
-        "title": "Cards Gallery",
-        'blog_list': qs
-        }
-    return render(request, "hbi-dashboard/gallery.html", context)
-
-
 def about_page(request):
     return render(request, "about.html", {"title": "About"})
 
@@ -56,18 +47,24 @@ def nav(request):
 
 
 def gallery(request):
-    context = {"title": "Hengbao Cards Gallery"}
+    print('HERE at gallery')
+    qs = Product.objects.filter(is_published=True, type="EPROOF")
+    context = {
+        "title": "Hengbao Cards Gallery",
+        "listings": qs,
+    }
+    print('1. qs=',qs)
     return render(request, 'hbi-homepage/gallery.html', context)
 
 
 def index(request):
     if request.user.is_authenticated:
         my_qs = Member.objects.filter(username=request.user)
-        context = {"title": "index.html", 'blog_list': my_qs}
+        context = {"title": "HBI DigitalHub", 'blog_list': my_qs}
         #return render(request, 'hbi-dashboard/dashboard.html', context)
         return redirect('alldocuments')
     else:
         qs = Listing.objects.all()
-        context = {"title": "index.html", 'blog_list': qs}
+        context = {"title": "HBI DigitalHub", 'blog_list': qs}
         return render(request, "hbi-homepage/index.html", context)
 

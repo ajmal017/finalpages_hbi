@@ -6,4 +6,8 @@ python-dotenv
 django-cors-headers==2.5.2
 django-allauth
 asgiref==3.2.3
-django-cors-headers==3.2.1
+psycopg2==2.8.3
+psycopg2-binary==2.8.3
+gunicorn==19.7.1
+django-storages==1.9.1
+boto3==1.14.11

@@ -169,7 +169,6 @@ urlpatterns = [
 
 ## homepage (prior to successful login) ##
     path('', index, name='home'),
-    path('gallery/', gallery, name='gallery'),
     path('blank/', blank, name ='blank'),
     path('sendingmail/', sending_mail),                #test sending email
     #path('listings/', include('listings.urls')),       #127.0.0.1:8000/listings (btre)

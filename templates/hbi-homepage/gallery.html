@@ -100,10 +100,15 @@
 				<h1>Hengbao Cards Gallery <span>in Asia Pacific regions</span></h1>
 
 			</header>
+
+
+
 			<ul class="grid effect-7" id="grid">
-				<li><a href="http://drbl.in/fWMM"><img src="{% static 'masonry/images/1.png' %}"></a></li>
-				<li><a href="http://drbl.in/fWPV"><img src="{% static 'masonry/images/3.png' %}"></a></li>
-				<li><a href="http://drbl.in/fWMT"><img src="{% static 'masonry/images/4.png' %}"></a></li>
+				{% for listing in listings %}
+				<li><a href="{{ listing.cover_file.url }}"><img src="{{ listing.image2_file.url }}"></a></li>
+				{% endfor %}
+				<li><a href="card2"><img src="{% static 'masonry/images/3.png' %}"></a></li>
+				<li><a href="card3"><img src="{% static 'masonry/images/4.png' %}"></a></li>
 				<li><a href="http://drbl.in/fQdt"><img src="{% static 'masonry/images/12.png' %}"></a></li>
 				<li><a href="http://drbl.in/fHaa"><img src="{% static 'masonry/images/13.png' %}"></a></li>
 				<li><a href="http://drbl.in/gXMo"><img src="{% static 'masonry/images/10.png' %}"></a></li>
@@ -189,6 +194,10 @@
 				<li><a href="http://drbl.in/fGhI"><img src="{% static 'masonry/images/5.png' %}"></a></li>
 				<li><a href="http://drbl.in/fzYo"><img src="{% static 'masonry/images/2.png' %}"></a></li>
 			</ul>
+
+
+
+
 		</div>
 		<script src="{% static 'masonry/js/masonry.pkgd.min.js' %}"></script>
 		<script src="{% static 'masonry/js/imagesloaded.js' %}"></script>

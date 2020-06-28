@@ -61,7 +61,7 @@
                                         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
                                         <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
                                     </ol>
-                                    <div class="carousel-inner" style="max-height: 450px">
+                                    <div class="carousel-inner">
                                         <div class="carousel-item active">
                                             <img class="d-block w-100" src="{{ listing.image1_file.url }}" alt="First slide">
                                         </div>
@@ -73,9 +73,11 @@
                                         </div>
                                     </div>
                                     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                                        <span><i class="fas fa-2x fa-arrow-circle-left" style="color:red;"></i></span></a>
+                                      <span class="carousel-control-prev-icon" aria-hidden="false"></span>
+                                       <span class="sr-only">Previous</span>  </a>
                                     <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                                        <span><i class="fas fa-2x fa-arrow-circle-right" style="color:red;"></i></span></a>
+                                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>  </a>
                                 </div>
                             </div>
                                         <p class="card-text" style="background-color:#decdc3">{{ listing.description }}</p>
@@ -109,7 +111,7 @@
                 <div class="card-body">
                     <!-- <h3 class="card-title">Download</h3>  -->
                     <!-- <a href="#" class="btn btn-primary">DOWNLOAD DOCUMENT <i class="fas fa-download"></i></a> -->
-                    <a href="{{ listing.document_file.url }}" class="btn btn-success" download>Download <i class="fas fa-download"></i></a>
+                    <a href="{{ listing.document_file.url }}" class="btn btn-success" download>Download<i class="fas fa-download"></i></a>
 
 
                 </div>

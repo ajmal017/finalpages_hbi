@@ -34,6 +34,7 @@ INSTALLED_APPS = [ # components
     'corsheaders',                 # Cross-Origin Resource Sharing (CORS) to prevent API security issues with different domains or ports
     'rest_framework',              # rest framework fot creating GET, POST, PUT, DELETE
     'rest_framework.authtoken',    # for token creation when new user is created (shown at admin page under AUTH TOKEN)
+    'storages',
 
     'members',
     'customers',
@@ -90,11 +91,24 @@ WSGI_APPLICATION = 'try_django.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.environ.get("SQL_DATABASE", "btre_prod"),
+        "USER": os.environ.get("SQL_USER", "dbadmin"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "Romans12:1"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432")
+    }
+}
+
+"""
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+"""
 
 
 # Password validation
@@ -176,3 +190,22 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:3000",
 
 ]
+
+#S3 BUCKETS CONFIG
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = 'hbidigitalhub-awsbucket'
+
+
+#AWS_ACCESS_KEY_ID = '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'
+#AWS_SECRET_ACCESS_KEY = 'AKIAZQJUSSX3BWXG4A7Y'
+#AWS_STORAGE_BUCKET_NAME = 'hbidigitalhub-awsbucket'
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+#STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+
+

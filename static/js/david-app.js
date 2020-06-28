@@ -55,7 +55,7 @@ buildList()
 			fetch(url)
 			.then((resp) => resp.json())
 			.then(function(data){
-				console.log('Data001:', data)  //display at console
+				//console.log('Data001:', data)  //display at console
             // render the data into the document
 				var list = data
 				for (var i in list){
@@ -184,12 +184,12 @@ function clickTitleItem(item){
 
 function changePublishItem(item){
             //console.log('item              =>', item)
-			console.log('1. item.id           =>', item.id)
-			console.log('2. item.is_published =>', item.is_published)
+			//console.log('1. item.id           =>', item.id)
+			//console.log('2. item.is_published =>', item.is_published)
 
             var new_ispublished = !item.is_published
 			//item.is_published = !item.is_published
-			console.log('3. new_ispublished =>', new_ispublished)
+			//console.log('3. new_ispublished =>', new_ispublished)
 
 
 
